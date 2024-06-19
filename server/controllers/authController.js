@@ -43,9 +43,6 @@ const login = async (req, res) => {
   if (!isPasswordCorrect)
     throw new CustomError.UnauthenticatedError("Invalid password!");
 
-  if (!user.isVerified)
-    throw new CustomError.UnauthenticatedError("Please verify your email!");
-
   const tokenUser = createTokenUser(user);
   let refreshToken = "";
 
