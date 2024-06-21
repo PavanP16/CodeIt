@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, "Name is a required field!"],
+    unique: true,
     minlength: 3,
     maxlength: 50,
   },
@@ -30,12 +31,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ["admin", "user"],
     default: "user",
-  },
-  verificationToken: {
-    type: String,
-  },
-  verified: {
-    type: Date,
   },
   passwordToken: {
     type: String,

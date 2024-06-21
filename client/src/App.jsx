@@ -8,14 +8,19 @@ import {
 } from "react-router-dom";
 import { NextUIProvider } from "@nextui-org/react";
 import Auth from "./pages/Auth";
+import { AppProvider } from "../ContextAPI/AuthContext";
+import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import Home from "./pages/Home";
+import ProtectedLayout from "../ProtectedRoute/ProtectedLayout";
+import Navbar from "./components/Navbar";
 
 const Root = () => {
   const path = useLocation();
-  console.log(path.pathname);
   return (
     <>
       {/* {!(path.pathname === "/") && <Navbar />} */}
-      <Outlet />;
+      <Outlet />
     </>
   );
 };
@@ -23,18 +28,32 @@ const Root = () => {
 const Router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Root />}>
-      <Route path="" element={<Auth />} />
+      <Route index element={<Auth />} />
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <ProtectedLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="home" element={<Home />} />
+      </Route>
     </Route>
   )
 );
 
 function App() {
   return (
-    <>
-      <NextUIProvider>
-        <RouterProvider router={Router} />
-      </NextUIProvider>
-    </>
+    <div className="w-screen h-screen overflow-x-hidden">
+      <AppProvider>
+        <NextUIProvider>
+          <Toaster />
+          <RouterProvider router={Router} />
+        </NextUIProvider>
+      </AppProvider>
+    </div>
   );
 }
 
