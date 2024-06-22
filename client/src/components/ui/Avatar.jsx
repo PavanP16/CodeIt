@@ -7,7 +7,7 @@ export default function Profile() {
       <Avatar
         icon={<AvatarIcon />}
         classNames={{
-          base: "bg-gradient-to-br from-[#FFB457] to-[#FF705B]",
+          base: "bg-gradient-to-br from- to-[#FF705B]",
           icon: "text-black/80",
         }}
       />

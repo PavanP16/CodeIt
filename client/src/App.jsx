@@ -14,12 +14,18 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Home from "./pages/Home";
 import ProtectedLayout from "../ProtectedRoute/ProtectedLayout";
 import Navbar from "./components/Navbar";
+import Problems from "./pages/Problems";
+import Leaderboard from "./pages/Leaderboard";
+import ProfileUser from "./pages/ProfileUser";
+import UserDetails from "./components/Profile/UserDetails";
+import Resume from "./components/Profile/Resume";
+import Submissions from "./components/Profile/Submissions";
 
 const Root = () => {
   const path = useLocation();
   return (
     <>
-      {/* {!(path.pathname === "/") && <Navbar />} */}
+      {!(path.pathname === "/") && <Navbar />}
       <Outlet />
     </>
   );
@@ -39,6 +45,13 @@ const Router = createBrowserRouter(
         }
       >
         <Route path="home" element={<Home />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
+        <Route path="allproblems" element={<Problems />} />
+        <Route path="profile" element={<ProfileUser />}>
+          <Route path="user" element={<UserDetails />} />
+          <Route path="resume" element={<Resume />} />
+          <Route path="submissions" element={<Submissions />} />
+        </Route>
       </Route>
     </Route>
   )

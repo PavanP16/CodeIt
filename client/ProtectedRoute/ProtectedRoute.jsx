@@ -1,15 +1,15 @@
 import { Navigate } from "react-router-dom";
-import { GlobalContext } from "../ContextAPI/AuthContext";
+import { useGlobalContext } from "../ContextAPI/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  const { userDetails } = GlobalContext();
+  const { userDetails, isLoading } = useGlobalContext();
 
-  console.log(userDetails
-
-    
-  );
+  if (isLoading) {
+    return (
+      <h1 className="text-2xl text-center text-violet-600 my-40">Loading...</h1>
+    );
+  }
 
   return userDetails ? children : <Navigate to="/" />;
 };
-
 export default ProtectedRoute;

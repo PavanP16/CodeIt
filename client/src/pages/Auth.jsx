@@ -5,11 +5,11 @@ import { Input } from "@nextui-org/input";
 import { EyeSlashFilledIcon } from "../components/ui/icons/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../components/ui/icons/EyeFilledIcon";
 import { FaLaptopCode } from "react-icons/fa";
-import { GlobalContext } from "../../ContextAPI/AuthContext";
+import { useGlobalContext } from "../../ContextAPI/AuthContext";
 import toast from "react-hot-toast";
 
 const Auth = () => {
-  const { saveUser } = GlobalContext();
+  const { saveUser,userDetails } = useGlobalContext();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -117,6 +117,8 @@ const Auth = () => {
       }
     }
   };
+
+  console.log(userDetails);
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">

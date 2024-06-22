@@ -5,6 +5,7 @@ const AppContext = createContext();
 // eslint-disable-next-line react/prop-types
 const AppProvider = ({ children }) => {
   const [userDetails, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const saveUser = (user) => {
     setUser(user);
@@ -19,10 +20,11 @@ const AppProvider = ({ children }) => {
       const { data } = await axios.get(`${import.meta.env.VITE_SERVER_API}/api/v1/users/showMe`, {
         withCredentials: true,
       });
-      saveUser(data.user);
+      saveUser(data?.user);
     } catch (error) {
         deleteUser();
     }
+    setIsLoading(false);
   };
 
   const logoutUser = async () => {
@@ -39,12 +41,14 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     fetchUser();
   }, []);
-
+  
+  console.log(userDetails);
   return (
     <AppContext.Provider
       value={{
         saveUser,
         userDetails,
+        isLoading,
         logoutUser,
       }}
     >
@@ -53,7 +57,7 @@ const AppProvider = ({ children }) => {
   );
 };
 
-export const GlobalContext = () => {
+export const useGlobalContext = () => {
   return useContext(AppContext);
 };
 
