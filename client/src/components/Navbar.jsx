@@ -17,20 +17,20 @@ const Navbar = () => {
         <div className="flex gap-x-10">
           <Link
             to="/home"
-            className="text-zinc-700 text-sm font-medium hover:text-amber-500 hover:"
+            className="text-zinc-700 text-sm font-medium hover:text-green-500 hover:"
           >
             Home
           </Link>
 
           <Link
             to="/leaderboard"
-            className="text-zinc-700 text-sm font-medium hover:text-amber-500 hover:"
+            className="text-zinc-700 text-sm font-medium hover:text-green-500 hover:"
           >
             Leaderboard
           </Link>
           <Link
             to="/allproblems"
-            className="text-zinc-700 text-sm font-medium hover:text-amber-500 hover:"
+            className="text-zinc-700 text-sm font-medium hover:text-green-500 hover:"
           >
             Problems
           </Link>

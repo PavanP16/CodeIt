@@ -7,15 +7,15 @@ import { TfiWrite } from "react-icons/tfi";
 
 const Sidebar = () => {
   return (
-    <div className=" h-full">
+    <div className="bg-white h-full rounded-lg pr-3 sticky top-0">
       <div className="flex items-center justify-center h-20">
         {/* <img src={logo} className="h-12 w-14" /> */}
-        <h1 className="font-bold">CodeIT</h1>
+        <h1 className="text-xl">Profile</h1>
       </div>
       <div className="flex flex-col justify-between">
         <>
           <NavLink
-            to=""
+            to="user"
             style={({ isActive }) =>
               isActive
                 ? {
@@ -31,7 +31,7 @@ const Sidebar = () => {
             }
           >
             <UserRound size={17} className={styles.inicon} />
-            <h1 className={"text-sm " + styles.intext}>Profile</h1>
+            <h1 className={"text-sm " + styles.intext}>User Details</h1>
           </NavLink>
 
 
