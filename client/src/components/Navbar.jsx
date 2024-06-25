@@ -9,8 +9,8 @@ const Navbar = () => {
   return (
     <div className="h-fit bg-zinc-50 border-b border-zinc-300 z-[10] py-2">
       <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2">
-        <Link href="/" className="flex gap-2 items-center">
-          <p className="hidden text-zinc-700 text-sm font-medium md:block">
+        <Link to="home" className="flex gap-2 items-center">
+          <p className="hidden text-zinc-700 text-base font-semibold md:block">
             CodeIT
           </p>
         </Link>

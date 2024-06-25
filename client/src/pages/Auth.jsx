@@ -9,7 +9,7 @@ import { useGlobalContext } from "../../ContextAPI/AuthContext";
 import toast from "react-hot-toast";
 
 const Auth = () => {
-  const { saveUser,userDetails } = useGlobalContext();
+  const { saveUser, userDetails } = useGlobalContext();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +32,8 @@ const Auth = () => {
     }
 
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/
+    const passwordRegex =
+      /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/;
     const isValidEmail = emailRegex.test(email);
     const isValidPassword = passwordRegex.test(password);
     if (!isValidEmail) {
@@ -51,17 +52,20 @@ const Auth = () => {
     }
 
     if (!isValidPassword) {
-      toast.error("Enter a valid password(Min 8 characters with minimum 1 captial,1 small,1 number and 1 symbol).", {
-        style: {
-          border: "1px solid rgb(234 179 8)",
-          padding: "16px",
-          color: "rgb(234 179 8)",
-        },
-        iconTheme: {
-          primary: "rgb(234 179 8)",
-          secondary: "#FFFAEE",
-        },
-      });
+      toast.error(
+        "Enter a valid password(Min 8 characters with minimum 1 captial,1 small,1 number and 1 symbol).",
+        {
+          style: {
+            border: "1px solid rgb(234 179 8)",
+            padding: "16px",
+            color: "rgb(234 179 8)",
+          },
+          iconTheme: {
+            primary: "rgb(234 179 8)",
+            secondary: "#FFFAEE",
+          },
+        }
+      );
       return;
     }
 
@@ -80,13 +84,15 @@ const Auth = () => {
             withCredentials: true,
           }
         );
-        saveUser(data.user);
-        console.log(data.user);
-        toast.success("Registered successfully");
-        setEmail("");
-        setPassword("");
-        setUsername("");
-        navigator("/home");
+        if (data) {
+          saveUser(data?.user);
+          console.log(data.user);
+          toast.success("Registered successfully");
+          setEmail("");
+          setPassword("");
+          setUsername("");
+          navigator("/home");
+        } 
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message);
@@ -105,12 +111,14 @@ const Auth = () => {
             withCredentials: true,
           }
         );
-        saveUser(data.user);
-        console.log(data.user);
-        toast.success("Logged in successfully");
-        setEmail("");
-        setPassword("");
-        navigator("/home");
+        if (data) {
+          saveUser(data?.user);
+          console.log(data.user);
+          toast.success("Logged in successfully");
+          setEmail("");
+          setPassword("");
+          navigator("/profile/user");
+        }
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message);

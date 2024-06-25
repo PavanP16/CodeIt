@@ -1,11 +1,14 @@
 import { VscSignOut } from "react-icons/vsc";
-import { Gauge, UserCog, Building, ClipboardCheck, Star, UserRound } from "lucide-react";
-import { RiQuestionnaireLine } from "react-icons/ri";
+import {  ClipboardCheck, UserRound } from "lucide-react";
 import styles from "./Sidebar.module.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { TfiWrite } from "react-icons/tfi";
+import { useGlobalContext } from "../../../ContextAPI/AuthContext";
 
 const Sidebar = () => {
+
+  const navigate = useNavigate();
+  const { logoutUser } = useGlobalContext();
   return (
     <div className="bg-white h-full rounded-lg pr-3 sticky top-0">
       <div className="flex items-center justify-center h-20">
@@ -83,7 +86,10 @@ const Sidebar = () => {
             className={
               "mt-3 flex items-center gap-x-2 text-gray-500 font-semibold w-full ml-2 pl-3 mr-3 px-2 py-3 rounded-md hover:bg-rose-100 hover:text-rose-500 transition ease-in-out duration-300"
             }
-            // onClick={logoutHandler}
+            onClick={() => {
+              logoutUser();
+              navigate("/");
+            }}
           >
             <VscSignOut size={20} className={"text-inherit"} />
             <h1 className={"text-sm text-inherit"}>LogOut</h1>

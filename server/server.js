@@ -10,6 +10,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const connectDB = require("./db/connectDB");
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
+const codeRouter = require("./routes/codeRouter");
 
 const { PORT, MONGO_URI, ORIGIN } = require("./config");
 
@@ -41,6 +42,7 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/code", codeRouter);
 
 app.use(notFound);
 app.use(errorHandlerMiddleware);

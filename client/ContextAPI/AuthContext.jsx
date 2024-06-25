@@ -42,7 +42,6 @@ const AppProvider = ({ children }) => {
     fetchUser();
   }, []);
   
-  console.log(userDetails);
   return (
     <AppContext.Provider
       value={{

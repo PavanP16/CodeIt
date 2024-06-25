@@ -20,6 +20,7 @@ import ProfileUser from "./pages/ProfileUser";
 import UserDetails from "./components/Profile/UserDetails";
 import Resume from "./components/Profile/Resume";
 import Submissions from "./components/Profile/Submissions";
+import Problem from "./pages/Prooblem";
 
 const Root = () => {
   const path = useLocation();
@@ -47,6 +48,7 @@ const Router = createBrowserRouter(
         <Route path="home" element={<Home />} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="allproblems" element={<Problems />} />
+        <Route path="testQ" element={<Problem />} />
         <Route path="profile" element={<ProfileUser />}>
           <Route path="user" element={<UserDetails />} />
           <Route path="resume" element={<Resume />} />

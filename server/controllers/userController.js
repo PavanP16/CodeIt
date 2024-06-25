@@ -2,9 +2,9 @@ const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
-  createTokenUser,
   attachCookiesToResponse,
 } = require("../utils/jwt");
+const createTokenUser = require("../utils/createTokenUser");
 
 const getAllUsers = async (req, res) => {
   console.log(req.user);
