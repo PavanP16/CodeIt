@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema({
   passwordTokenExpirationDate: {
     type: Date,
   },
+  skills: {
+    type: [String],
+    default: [],
+  },
 });
 
 UserSchema.pre("save", async function () {

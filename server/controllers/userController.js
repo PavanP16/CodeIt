@@ -30,6 +30,30 @@ const showCurrentUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
+const updateSkills = async (req, res) => {
+
+  const { skills } = req.body;
+  if (!skills) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Please provide skills!" });
+    throw new CustomError.BadRequestError("Please provide skills!");
+  }
+  const user = await User.findOne({ _id: req.user.userId });
+  user.skills = skills;
+  await user.save();
+  res.status(StatusCodes.OK).json({ msg: "Updated skills successfully!" });
+
+}
+
+const getSkills = async (req, res) => {
+
+  const user = await User.findOne({ _id: req.user.userId });
+
+  res.status(StatusCodes.OK).json({ skills: user.skills });
+
+}
+
 const updateUser = async (req, res) => {
   const { email, username } = req.body;
   if (!email && !username) {
@@ -38,6 +62,27 @@ const updateUser = async (req, res) => {
       .json({ message: "Please provide email or username!" });
     throw new CustomError.BadRequestError("Please provide email or username!");
   }
+
+  //Check if email or username already exists
+
+  // const emailExists = await User.findOne({ email
+  // });
+  // if (emailExists) {
+  //   res
+  //     .status(StatusCodes.BAD_REQUEST)
+  //     .json({ message: "Email already exists!" });
+  //   throw new CustomError.BadRequestError("Email already exists!");
+  // }
+  // const usernameExists = await User.findOne({ username });
+
+  // if (usernameExists) {
+  //   res
+  //     .status(StatusCodes.BAD_REQUEST)
+  //     .json({ message: "Username already exists!" });
+  //   throw new CustomError.BadRequestError("Username already exists!");
+  // }
+
+
   const user = await User.findOne({ _id: req.user.userId });
   if (email) user.email = email;
   if (username) user.username = username;
@@ -76,4 +121,6 @@ module.exports = {
   showCurrentUser,
   updateUser,
   updateUserPassword,
+  updateSkills,
+  getSkills,
 };

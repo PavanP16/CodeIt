@@ -51,7 +51,7 @@ const Router = createBrowserRouter(
         <Route path="testQ" element={<Problem />} />
         <Route path="profile" element={<ProfileUser />}>
           <Route path="user" element={<UserDetails />} />
-          <Route path="resume" element={<Resume />} />
+          <Route path="skills" element={<Resume />} />
           <Route path="submissions" element={<Submissions />} />
         </Route>
       </Route>

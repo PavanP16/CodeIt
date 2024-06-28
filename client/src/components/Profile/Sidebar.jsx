@@ -4,13 +4,14 @@ import styles from "./Sidebar.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { TfiWrite } from "react-icons/tfi";
 import { useGlobalContext } from "../../../ContextAPI/AuthContext";
+import { PiNotepad } from "react-icons/pi";
 
 const Sidebar = () => {
 
   const navigate = useNavigate();
   const { logoutUser } = useGlobalContext();
   return (
-    <div className="bg-white h-full rounded-lg pr-3 sticky top-0">
+    <div className="bg-white h-[80vh] rounded-lg pr-3 sticky top-0">
       <div className="flex items-center justify-center h-20">
         {/* <img src={logo} className="h-12 w-14" /> */}
         <h1 className="text-xl">Profile</h1>
@@ -39,7 +40,7 @@ const Sidebar = () => {
 
 
           <NavLink
-            to="resume"
+            to="skills"
             style={({ isActive }) =>
               isActive
                 ? {
@@ -54,10 +55,10 @@ const Sidebar = () => {
               styles.box
             }
           >
-            <TfiWrite size={17} className={"text-inherit " + styles.inicon} />
+            <PiNotepad size={20} className={"text-inherit " + styles.inicon} />
 
             <h1 className={"text-sm text-inherit " + styles.intext}>
-              Resume
+              Skills
             </h1>
           </NavLink>
 
