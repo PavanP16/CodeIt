@@ -49,7 +49,7 @@ const updateSkills = async (req, res) => {
 const getSkills = async (req, res) => {
 
   const user = await User.findOne({ _id: req.user.userId });
-
+  
   res.status(StatusCodes.OK).json({ skills: user.skills });
 
 }

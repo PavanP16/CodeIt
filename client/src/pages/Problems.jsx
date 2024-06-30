@@ -8,19 +8,18 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
+import { Pagination } from "@nextui-org/react";
+
 import { useNavigate } from "react-router-dom";
 import Tag from "../components/ui/Tag";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const Problems = () => {
   const navigator = useNavigate();
-
-  const problemsData = 
-    {
-      title: "Binary Search Binary Search Binary Search ",
-      difficulty: "Hard",
-      tags: ["Searching", "Arrays", "LogN"],
-    }
-  
+  const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const topics = [
     "DP",
     "Arrays",
@@ -45,9 +44,33 @@ const Problems = () => {
   const diff = ["Easy", "Medium", "Hard", "All"];
   const sta = ["All", "Solved"];
 
+  useEffect(() => {
+    const AllProblems = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_API}/api/v1/problems`,
+          {
+            withCredentials: true,
+          }
+        );
+        // console.log(response.data.problems);
+        setProblems(response.data.problems);
+      } catch (error) {
+        toast.error("Failed to fetch problems");
+        console.error("Failed to fetch problems:", error);
+      }
+      setLoading(false);
+    };
+    AllProblems();
+  }, []);
+
+
+
+  if (loading) return <div>Loading</div>;
+
   return (
-    <div className="m-0 flex h-screen pt-16 px-32 gap-x-10 bg-gray-50">
-      <div className="h-fit pb-52 w-52 flex-[3] p-5 bg-white rounded-md">
+    <div className="m-0 flex pt-10 px-32 gap-x-10 bg-gray-50">
+      <div className="h-fit pb-52 w-52 flex-[3] p-5 bg-white shadow-lg rounded-md">
         <h1 className="text-xl font-semibold ml-1">Tags</h1>
         <div className="mt-5 flex gap-x-3 gap-y-4 flex-wrap w-[85%]">
           {topics.map((fruit, index) => (
@@ -62,7 +85,7 @@ const Problems = () => {
           ))}
         </div>
       </div>
-      <div className=" h-screen w-52 flex-[9] p-5 bg-white">
+      <div className="w-52 flex-[9] p-5 bg-white h-fit shadow-lg rounded-md">
         <div className="flex gap-x-6">
           <div className="">
             <Select size="sm" placeholder="Select Difficulty" className="w-32">
@@ -103,9 +126,8 @@ const Problems = () => {
           />
         </div>
 
-        <div className="mt-10">
-          <Table isStriped>
-            {" "}
+        <div className="mt-5 bg-white h-fit">
+          <Table isStriped shadow="none">
             <TableHeader>
               <TableColumn>S.No</TableColumn>
               <TableColumn>Title</TableColumn>
@@ -114,83 +136,51 @@ const Problems = () => {
               <TableColumn>Tags</TableColumn>
             </TableHeader>
             <TableBody>
-              {/* {problemsData?.map((problem, idx) => { */}
-                <TableRow
-                  onClick={() =>
-                    navigator(`/problems/${problemsData.slug}/description`)
-                  }
-                >
-                  <TableCell >
-                   1
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {problemsData.title}
-                  </TableCell>
-                  <TableCell >
-                    <Chip
-                      variant="light"
-                      color={
-                        problemsData.difficulty === "Easy"
-                          ? "success"
-                          : problemsData.difficulty === "Medium"
-                          ? "warning"
-                          : problemsData.difficulty === "Hard"
-                          ? "danger"
-                          : "default"
-                      }
-                      size="sm"
+              {problems.length !== 0 &&
+                problems?.map((problem, idx) => {
+                  return (
+                    <TableRow
+                      className="hover:cursor-pointer hover:bg-gray-200"
+                      key={problem._id}
+                      onClick={() => navigator(`/problems/${problem?.slug}`)}
                     >
-                      {problemsData.difficulty}
-                    </Chip>
-                  </TableCell>
-                  <TableCell>
-                    672
-                  </TableCell>
-                  <TableCell >
-                    {problemsData.tags.map((tag) => {
-                      <Tag value={tag} size={"sm"}></Tag>
-                    })}
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  onClick={() =>
-                    navigator(`/problems/${problemsData.slug}/description`)
-                  }
-                >
-                  <TableCell >
-                   1
-                  </TableCell>
-                  <TableCell >
-                  Binary Search Binary Search Binary Search Biny Searc
-                  </TableCell>
-                  <TableCell >
-                    <Chip
-                      variant="light"
-                      color={
-                        problemsData.difficulty === "Easy"
-                          ? "success"
-                          : problemsData.difficulty === "Medium"
-                          ? "warning"
-                          : problemsData.difficulty === "Hard"
-                          ? "warning"
-                          : "default"
-                      }
-                      size="sm"
-                    >
-                      Medium
-                    </Chip>
-                  </TableCell>
-                  <TableCell>
-                    672
-                  </TableCell>
-                  <TableCell className="w-44 flex gap-x-3">
-                    <Tag value={"DP"} size={"sm"}></Tag>
-                    <Tag value={"Searching"} size={"sm"}></Tag>
-                  </TableCell>
-                </TableRow>
-              {/* })} */}
+                      <TableCell className="text-xs">{idx + 1}</TableCell>
+                      <TableCell className="text-xs w-72">
+                        {problem?.title}
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          variant="light"
+                          color={
+                            problem?.difficulty === "Easy"
+                              ? "success"
+                              : problem?.difficulty === "Medium"
+                              ? "warning"
+                              : problem?.difficulty === "Hard"
+                              ? "danger"
+                              : "default"
+                          }
+                          size="sm"
+                        >
+                          {problem?.difficulty}
+                        </Chip>
+                      </TableCell>
+                      <TableCell className="pl-6">
+                        {problem.Submissions}
+                      </TableCell>
+                      <TableCell className="flex gap-x-3">
+                        {problem?.tags.map((tag, idx) => {
+                          return <Tag key={idx} value={tag} size={"sm"}></Tag>;
+                        })}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
+          <div className="mt-2 pl-7">
+            <Pagination total={8} initialPage={1} />
+          </div>
         </div>
       </div>
     </div>

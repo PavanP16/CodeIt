@@ -7,7 +7,7 @@ const Navbar = () => {
   const [active, setActive] = useState(false);
 
   return (
-    <div className="h-fit bg-zinc-50 border-b border-zinc-300 z-[10] py-2">
+    <div className="h-fit bg-gray-200 border-b border-zinc-300 z-[10] py-2">
       <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2">
         <Link to="home" className="flex gap-2 items-center">
           <p className="hidden text-zinc-700 text-base font-semibold md:block">

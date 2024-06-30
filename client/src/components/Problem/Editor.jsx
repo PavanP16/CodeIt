@@ -14,7 +14,7 @@ import axios from "axios";
 const CODE_SNIPPETS = {
   cpp: `#include<bits/stdc++.h>\nusing namespace std;\n\nint main() {\n\n\tcout<<"Hello World!!"<<endl;\n\treturn 0;\n\n}`,
   python: "print('Hello World!!')\n",
-  java: `public class Main {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World!!")\n\t}\n}`,
+  java: `public class Main {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World!!");\n\t}\n}`,
 };
 
 const EditorCode = () => {
@@ -39,7 +39,8 @@ const EditorCode = () => {
       setRunning(false);
       setOutput(data.output);
     } catch (error) {
-      console.log(error.response);
+      setRunning(false);
+      console.log(error);
     }
   };
 
