@@ -69,7 +69,7 @@ const Problems = () => {
   if (loading) return <div>Loading</div>;
 
   return (
-    <div className="m-0 flex pt-10 px-32 gap-x-10 bg-gray-50">
+    <div className="m-0 flex pt-10 px-32 gap-x-10 bg-gray-50 h-[80vh]">
       <div className="h-fit pb-52 w-52 flex-[3] p-5 bg-white shadow-lg rounded-md">
         <h1 className="text-xl font-semibold ml-1">Tags</h1>
         <div className="mt-5 flex gap-x-3 gap-y-4 flex-wrap w-[85%]">

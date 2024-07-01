@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const Problem = require("../models/Problem");
 
-const   getAllProblems = async (req, res) => {
+const getAllProblems = async (req, res) => {
   try {
-    // get only specific fields
     const problems = await Problem.find({});
     res.status(StatusCodes.OK).json({ problems });
   } catch (error) {
@@ -15,7 +14,6 @@ const   getAllProblems = async (req, res) => {
 
 
 const getProblemBySlug = async (req, res) => {
-  // for unique get problem
   try {
     const problem = await Problem.find({ slug: req.params.slug });
     return res.status(StatusCodes.OK).json({ problem });
