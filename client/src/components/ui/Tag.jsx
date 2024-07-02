@@ -4,7 +4,7 @@ import {Chip} from "@nextui-org/react";
 
 export default function Tag({value,size,color,variant}) {
 
-  let co ;
+  let co = "default" ;
   if(value === "Easy") {
     co = "success"
   }else if(value === "Hard"){
@@ -15,6 +15,6 @@ export default function Tag({value,size,color,variant}) {
 
 
   return (
-    <Chip size={size} color={co} variant={variant}>{value}</Chip>
+    <Chip size={size} color={co} variant={variant} className="">{value}</Chip>
   );
 }

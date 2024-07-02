@@ -18,8 +18,12 @@ const { PORT, MONGO_URI, ORIGIN } = require("./config");
 const notFound = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const Problem = require("./models/Problem");
+const { saveFileToFirebase } = require("./firebase/saveToFirebase");
+const { StatusCodes } = require("http-status-codes");
 
 const app = express();
+
+const upload = require("./multer/upload");
 
 
 // const problemData = [
@@ -184,18 +188,102 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/code", codeRouter);
 app.use("/api/v1/problems", problemRouter);
 
-// app.use('/data', async (req, res) => {
+app.use('/data', async (req, res) => {
 
-//   try {
+  try {
 
-//     const pushData = await Problem.insertMany(problemData)
+    const pushData = await Problem.insertMany(problemData)
 
-//     res.status(200).send(pushData);
-//   } catch (error) {
-//     res.status(500).send({ error: 'Failed to insert data', details: error });
-//   }
+    res.status(200).send(pushData);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to insert data', details: error });
+  }
 
-// })
+})
+
+
+app.post('/test',upload.fields([
+  { name: 'input', maxCount: 1 },
+  { name: 'cppoutput', maxCount: 1 },
+  { name: 'javaoutput', maxCount: 1 },
+  { name: 'pythonoutput', maxCount: 1 },
+]), async (req, res) => {
+  try {
+    const {
+      slug,
+      description,
+      title,
+      difficulty,
+      constraints,
+      tags,
+    } = req.body;
+    const { input, cppoutput, javaoutput, pythonoutput } = req.files;
+
+    // Handle the uploaded files (input and output)
+    if (!input && !cppoutput && !javaoutput && !pythonoutput) {
+      return res
+        .status(400)
+        .json({ message: "Input and Output files are required" });
+    }
+
+    // Save input file to Firebase storage
+    const inputFilePath = await saveFileToFirebase(
+      "testinputs",
+      "txt",
+      input[0].buffer
+    );
+
+    // Save output files to Firebase storage
+    const cppOutputFilePath = await saveFileToFirebase(
+      "cppoutputs",
+      "txt",
+      cppoutput[0].buffer
+    );
+    const javaOutputFilePath = await saveFileToFirebase(
+      "javaoutputs",
+      "txt",
+      javaoutput[0].buffer
+    );
+    const pythonOutputFilePath = await saveFileToFirebase(
+      "pythonoutputs",
+      "txt",
+      pythonoutput[0].buffer
+    );
+
+    // Create an array of output file paths
+    const output = [
+      {
+        cpp: cppOutputFilePath,
+        java: javaOutputFilePath,
+        python: pythonOutputFilePath,
+      },
+    ];
+
+    // Create a new Problem instance
+    const problem = new Problem({
+      input: inputFilePath,
+      output: [...output],
+      tags,
+      slug,
+      description,
+      title,
+      difficulty,
+      constraints,
+      createdBy: "Yes",
+    });
+
+    // Save the problem to the database
+    await problem.save();
+
+    return res.status(StatusCodes.CREATED).json({ problem });
+  } catch (error) {
+    console.error("Error in creating problem:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Failed to create problem",
+      error: error.message,
+    });
+  }
+});
 
 app.use(notFound);
 app.use(errorHandlerMiddleware);

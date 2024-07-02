@@ -129,11 +129,11 @@ const Problems = () => {
         <div className="mt-5 bg-white h-fit">
           <Table isStriped shadow="none">
             <TableHeader>
-              <TableColumn>S.No</TableColumn>
-              <TableColumn>Title</TableColumn>
-              <TableColumn>Difficulty</TableColumn>
-              <TableColumn>Submissions</TableColumn>
-              <TableColumn>Tags</TableColumn>
+              <TableColumn className="font-bold text-gray-600">S.No</TableColumn>
+              <TableColumn className="font-bold text-gray-600">Title</TableColumn>
+              <TableColumn className="font-bold text-gray-600">Difficulty</TableColumn>
+              <TableColumn className="font-bold text-gray-600">Submissions</TableColumn>
+              <TableColumn className="font-bold text-gray-600">Tags</TableColumn>
             </TableHeader>
             <TableBody>
               {problems.length !== 0 &&
@@ -144,7 +144,7 @@ const Problems = () => {
                       key={problem._id}
                       onClick={() => navigator(`/problems/${problem?.slug}`)}
                     >
-                      <TableCell className="text-xs">{idx + 1}</TableCell>
+                      <TableCell className="text-xs">{idx + 1}.</TableCell>
                       <TableCell className="text-xs w-72">
                         {problem?.title}
                       </TableCell>

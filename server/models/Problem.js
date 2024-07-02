@@ -30,11 +30,9 @@ const ProblemSchema = new mongoose.Schema(
             {
                 input: {
                     type: String,
-                    required: true,
                 },
                 output: {
                     type: String,
-                    required: true,
                 },
             },
         ],
@@ -52,7 +50,23 @@ const ProblemSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        
+        input: {
+            type: String,
+        },
+        output: [
+            {
+                cpp: {
+                    type: String,
+                },
+                java: {
+                    type: String,
+                },
+                python: {
+                    type: String,
+                },
+            },
+        ],
+
     },
     { timestamps: true }
 );

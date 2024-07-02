@@ -26,7 +26,7 @@ const EditorCode = () => {
 
   const handleRunCode = async () => {
     setRunning(true);
-    setOutput("Running...");
+    setOutput("Compiling...");
     const payload = {
       language,
       code,
@@ -34,18 +34,40 @@ const EditorCode = () => {
     };
 
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_SERVER_API}/api/v1/code/run`, payload);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_SERVER_API}/api/v1/code/run`,
+        payload
+      );
       console.log(data);
       setRunning(false);
       setOutput(data.output);
     } catch (error) {
       setRunning(false);
       console.log(error);
+      setOutput(error.response.data.stderr);
     }
   };
 
-  const handleSubmitCode = () => {
+  const handleSubmitCode = async () => {
     setOutput("Submitting code...");
+    // const payload = {
+    //   language,
+    //   code,
+    //   problemId: problem[0]._id,
+    //   userId: user.userId,
+    // };
+    // try {
+    //   const { data } = await axios.post(`${url}/api/v1/code/submit`, payload, {
+    //     withCredentials: true,
+    //   });
+    //   console.log(data);
+    //   setLoading(false);
+    //   setOutput(data.output);
+    // } catch (error) {
+    //   console.log(error);
+    //   setLoading(false);
+    //   setOutput(error.response.data.stderr);
+    // }
     setInput("");
   };
 
@@ -66,7 +88,9 @@ const EditorCode = () => {
             placeholder="Language"
             onChange={handleLanguageChange}
           >
-            <SelectItem key="cpp" color="">Cpp</SelectItem>
+            <SelectItem key="cpp" color="">
+              Cpp
+            </SelectItem>
             <SelectItem key="python">Python</SelectItem>
             <SelectItem key="java">Java</SelectItem>
           </Select>
