@@ -16,19 +16,17 @@ const register = async (req, res) => {
 
   if (emailExists) {
 
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Email already exists!" });
-    throw new CustomError.BadRequestError("Email already exists!");
   }
 
   const usernameExists = await User.findOne({ username });
 
   if (usernameExists) {
-    res
+   return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Username already exists!" });
-    throw new CustomError.BadRequestError("Username already exists!");
   }
 
   const user = await User.create({
@@ -38,10 +36,9 @@ const register = async (req, res) => {
   });
 
   if (!user) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Invalid user data!" });
-    throw new CustomError.BadRequestError("Invalid user data!");
   }
 
 
@@ -57,34 +54,31 @@ const register = async (req, res) => {
 
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
 
-  res.status(StatusCodes.OK).json({ user: tokenUser, message: "Your account has been registered" });
+  return res.status(StatusCodes.OK).json({ user: tokenUser, message: "Your account has been registered" });
 
 };
 
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Please provide email and password!" });
-    throw new CustomError.BadRequestError("Please provide email and password!");
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Invalid Credentials!" });
-    throw new CustomError.UnauthenticatedError("Invalid Credentials!");
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Invalid Credentials!" });
-    throw new CustomError.UnauthenticatedError("Invalid Credentials!");
   }
 
   const tokenUser = createTokenUser(user);
@@ -95,16 +89,14 @@ const login = async (req, res) => {
   if (existingToken) {
     const { isValid } = existingToken;
     if (!isValid) {
-      res
+      return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Invalid Credentials!" });
-      throw new CustomError.UnauthenticatedError("Invalid Credentials!");
     }
 
     refreshToken = existingToken.refreshToken;
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-    res.status(StatusCodes.OK).json({ user: tokenUser });
-    return;
+    return res.status(StatusCodes.OK).json({ user: tokenUser });
   }
   refreshToken = crypto.randomBytes(40).toString("hex");
   const userAgent = req.headers["user-agent"];
@@ -113,7 +105,7 @@ const login = async (req, res) => {
 
   await Token.create(userToken);
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+  return res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {
@@ -126,7 +118,7 @@ const logout = async (req, res) => {
     httpOnly: true,
     expires: new Date(Date.now()),
   });
-  res.status(StatusCodes.OK).json({ msg: "Logged out!!" });
+  return res.status(StatusCodes.OK).json({ msg: "Logged out!!" });
 };
 
 

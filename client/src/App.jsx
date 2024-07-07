@@ -20,14 +20,19 @@ import ProfileUser from "./pages/ProfileUser";
 import UserDetails from "./components/Profile/UserDetails";
 import Resume from "./components/Profile/Resume";
 import Submissions from "./components/Profile/Submissions";
-import Problem from "./pages/Prooblem";
-import ProblemDetail from "./pages/Prooblem";
+import ProblemDetail from "./pages/ProblemDetail";
+import Admin from "./pages/Admin";
+import AdminHome from "./components/Admin/AdminHome";
+import AdminProblems from "./components/Admin/AdminProblems";
+import AddProblem from "./components/Admin/AddProblem";
 
 const Root = () => {
   const path = useLocation();
   return (
     <>
-      {!(path.pathname === "/") && <Navbar />}
+      {!(path.pathname === "/") && !path.pathname.startsWith("/admin") && (
+        <Navbar />
+      )}
       <Outlet />
     </>
   );
@@ -49,11 +54,16 @@ const Router = createBrowserRouter(
         <Route path="home" element={<Home />} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="allproblems" element={<Problems />} />
-        <Route path="/problems/:slug" element={<ProblemDetail />} />
+        <Route path="problems/:slug" element={<ProblemDetail />} />
         <Route path="profile" element={<ProfileUser />}>
           <Route path="user" element={<UserDetails />} />
           <Route path="skills" element={<Resume />} />
           <Route path="submissions" element={<Submissions />} />
+        </Route>
+        <Route path="admin" element={<Admin />}>
+          <Route path="home" element={<AdminHome />} />
+          <Route path="problems" element={<AdminProblems />} />
+          <Route path="createproblem" element={<AddProblem />} />
         </Route>
       </Route>
     </Route>

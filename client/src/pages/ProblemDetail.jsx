@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SplitPane from "split-pane-react";
 import "split-pane-react/esm/themes/default.css";
 import axios from "axios";
 import EditorCode from "../components/Problem/Editor";
@@ -12,7 +11,6 @@ const ProblemDetail = () => {
   const [loading, setIsLoading] = useState(true);
   const [problem, setProblem] = useState(null);
 
-  const [sizes, setSizes] = useState(["40%", "auto"]);
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -48,7 +46,7 @@ const ProblemDetail = () => {
         <Problem problem={problem}/>
       </div>
       <div className="flex-[3] border border-gray-200">
-        <EditorCode />
+        <EditorCode problem={problem}/>
       </div>
     </div>
   );

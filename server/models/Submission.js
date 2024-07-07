@@ -22,7 +22,7 @@ const SubmissionSchema = new mongoose.Schema(
         status: {
             type: String,
             required: true,
-            enum: ["rejected", "accepted"],
+            enum: ["rejected", "accepted","time limit exceeded"],
         },
         executionTime: {
             type: Number,

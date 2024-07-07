@@ -1,5 +1,6 @@
 const { v4: uuid } = require("uuid");
 const bucket = require("./bucketAdmin");
+const { StatusCodes } = require("http-status-codes");
 
 const saveFileToFirebase = async (folder, format, filePath) => {
   try {
@@ -17,7 +18,7 @@ const saveFileToFirebase = async (folder, format, filePath) => {
     const fileUrl = `https://storage.googleapis.com/${bucket.name}/${folder}/${filename}`;
     return fileUrl;
   } catch (error) {
-    throw new Error(`Failed to save file to Firebase: ${error.message}`);
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: "Firebase error" });
   }
 };
 

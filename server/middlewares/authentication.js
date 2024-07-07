@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const Token = require("../models/Token");
 const { isTokenValid, attachCookiesToResponse } = require("../utils/jwt");
@@ -19,7 +20,7 @@ const authenticateUser = async (req, res, next) => {
     });
 
     if (!existingToken || !existingToken?.isValid) {
-      throw new CustomError.UnauthenticatedError("Authentication Invalid");
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Unauthorized" });
     }
 
     attachCookiesToResponse({
@@ -31,16 +32,14 @@ const authenticateUser = async (req, res, next) => {
     req.user = payload.user;
     next();
   } catch (error) {
-    throw new CustomError.UnauthenticatedError("Authentication Invalid");
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Unauthorized" });
   }
 };
 
 const authorizePermissions = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      throw new CustomError.UnauthorizedError(
-        "Unauthorized to access to this route!"
-      );
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Unauthorized" });
     }
     next();
   };

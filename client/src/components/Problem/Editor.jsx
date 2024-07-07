@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Editor } from "@monaco-editor/react";
 import {
   Button,
@@ -17,7 +18,7 @@ const CODE_SNIPPETS = {
   java: `public class Main {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World!!");\n\t}\n}`,
 };
 
-const EditorCode = () => {
+const EditorCode = ({ problem }) => {
   const [code, setCode] = useState(CODE_SNIPPETS["cpp"]);
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -36,7 +37,9 @@ const EditorCode = () => {
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_SERVER_API}/api/v1/code/run`,
-        payload
+        payload,{
+          withCredentials:true,
+        }
       );
       console.log(data);
       setRunning(false);
@@ -50,24 +53,23 @@ const EditorCode = () => {
 
   const handleSubmitCode = async () => {
     setOutput("Submitting code...");
-    // const payload = {
-    //   language,
-    //   code,
-    //   problemId: problem[0]._id,
-    //   userId: user.userId,
-    // };
-    // try {
-    //   const { data } = await axios.post(`${url}/api/v1/code/submit`, payload, {
-    //     withCredentials: true,
-    //   });
-    //   console.log(data);
-    //   setLoading(false);
-    //   setOutput(data.output);
-    // } catch (error) {
-    //   console.log(error);
-    //   setLoading(false);
-    //   setOutput(error.response.data.stderr);
-    // }
+    const payload = {
+      language,
+      code,
+      problemId: problem[0]._id,
+    };
+    try {
+      const { data } = await axios.post(`${import.meta.env.VITE_SERVER_API}/api/v1/code/submit`, payload, {
+        withCredentials: true,
+      });
+      console.log(data);
+      setRunning(false);
+      setOutput(data.output);
+    } catch (error) {
+      console.log(error);
+      setRunning(false);
+      setOutput(error.response.data.stderr);
+    }
     setInput("");
   };
 
@@ -132,7 +134,13 @@ const EditorCode = () => {
                 <Textarea
                   className="w-full mb-2 flex-1"
                   placeholder="Output"
-                  value={output}
+                  value={`${
+                    output === "accepted" ||
+                    output === "failed" ||
+                    output === "time limit exceeded"
+                      ? output.toUpperCase()
+                      : output
+                  }`}
                   readOnly
                 />
               </Tab>
