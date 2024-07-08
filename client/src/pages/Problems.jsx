@@ -92,15 +92,15 @@ const Problems = () => {
               {diff.map((diff, idx) => (
                 <SelectItem
                   key={idx}
-                  className={
-                    diff == "Easy"
-                      ? "text-green-500"
-                      : diff == "Medium"
-                      ? "text-amber-500"
-                      : diff == "Hard"
-                      ? "text-red-500"
-                      : "success"
-                  }
+                  // className={
+                  //   diff == "Easy"
+                  //     ? "text-green-500"
+                  //     : diff == "Medium"
+                  //     ? "text-amber-500"
+                  //     : diff == "Hard"
+                  //     ? "text-red-500"
+                  //     : "success"
+                  // }
                 >
                   {diff}
                 </SelectItem>

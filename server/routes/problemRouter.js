@@ -24,7 +24,7 @@ router.route("/").get(authenticateUser,getAllProblems).post(
 
 router.route("/:slug").get(authenticateUser,getProblemBySlug);
 
-router.route("/:id").get(authenticateUser,getProblemById)
+router.route("/prob/:id").get(authenticateUser,getProblemById)
 
 
 module.exports = router;

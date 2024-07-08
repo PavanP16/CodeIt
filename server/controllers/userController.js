@@ -1,10 +1,12 @@
 const User = require("../models/User");
+const Submission = require("../models/Submission");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
   attachCookiesToResponse,
 } = require("../utils/jwt");
 const createTokenUser = require("../utils/createTokenUser");
+const Problem = require("../models/Problem");
 
 const getAllUsers = async (req, res) => {
   console.log(req.user);
@@ -19,8 +21,60 @@ const getSingleUser = async (req, res) => {
       .status(StatusCodes.NOT_FOUND)
       .json({ message: `No user found with username: ${req.params.username}` });
   }
-  // checkPermissions(req.user, user._id);
-  return res.status(StatusCodes.OK).json({ user });
+
+  const userId = req.user.userId;
+  try {
+    const submissions = await Submission.find({
+      userId,
+      status: "accepted",
+    })
+      .sort({ createdAt: -1 })
+      .limit(4)
+      .exec();
+
+    const acceptedcount = await Submission.countDocuments({
+      userId,
+      status: "accepted"
+    });
+
+    const totalCount = await Submission.countDocuments({
+      userId,
+    });
+
+    const problemsCount = await Problem.countDocuments({});
+
+    const codingScore = acceptedcount / totalCount * 100;
+
+    const allUsers = await User.find().sort({ score: -1 });
+
+    const userPosition = allUsers.findIndex(user => user._id.toString() === userId);
+    const result = await Submission.aggregate([
+      {
+        $match: { userId } // Match submissions for the specified userId
+      },
+      {
+        $group: {
+          _id: { userId: "$userId", problemId: "$problemId" },
+          count: { $sum: 1 } // Count unique combinations of userId and problemId
+        }
+      },
+      {
+        $group: {
+          _id: "$_id.userId",
+          solvedProblemCount: { $sum: 1 } // Count distinct problemIds for each user
+        }
+      }
+    ]);
+
+    if (result.length > 0) {
+      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: result[0].solvedProblemCount, totalCount, acceptedcount, problemsCount, codingScore, pos: userPosition + 1 });
+    } else {
+      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: 0, totalCount, acceptedcount, problemsCount, codingScore, });
+    }
+
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
+  }
 };
 
 const showCurrentUser = async (req, res) => {
@@ -45,7 +99,7 @@ const updateSkills = async (req, res) => {
 const getSkills = async (req, res) => {
 
   const user = await User.findOne({ _id: req.user.userId });
-  
+
   return res.status(StatusCodes.OK).json({ skills: user.skills });
 
 }
@@ -90,10 +144,10 @@ const updateUser = async (req, res) => {
 const updateUserPassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   if (!oldPassword || !newPassword) {
-   return res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Please provide old and new passwords!" });
-   
+
   }
   const user = await User.findOne({ _id: req.user.userId });
   const isPasswordCorrect = await user.comparePassword(oldPassword);
@@ -107,10 +161,49 @@ const updateUserPassword = async (req, res) => {
   return res.status(StatusCodes.OK).json({ msg: "Updated password successfully!" });
 };
 
+
+const getLeaderboard = async (req, res) => {
+
+  try {
+    const usersWithSubmissionCounts = await User.aggregate([
+      {
+        $lookup: {
+          from: "submissions",
+          localField: "_id",
+          foreignField: "userId",
+          as: "submissions"
+        }
+      },
+      {
+        $addFields: {
+          submissionCount: { $size: "$submissions" }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          username: 1,
+          email: 1,
+          score: 1,
+          submissionCount: 1
+        }
+      },
+      {
+        $sort: { score: -1 }
+      }
+    ]);
+
+    return res.status(StatusCodes.OK).json({ users: usersWithSubmissionCounts });
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
   showCurrentUser,
+  getLeaderboard,
   updateUser,
   updateUserPassword,
   updateSkills,

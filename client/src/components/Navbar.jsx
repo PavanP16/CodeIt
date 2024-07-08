@@ -2,7 +2,10 @@ import { Link } from "react-router-dom";
 import Profile from "./ui/Avatar";
 import { AiOutlineFire } from "react-icons/ai";
 import { AiFillFire } from "react-icons/ai";
+import { PiFireLight } from "react-icons/pi";
 import { useState } from "react";
+import { PiFireFill } from "react-icons/pi";
+
 const Navbar = () => {
   const [active, setActive] = useState(false);
 
@@ -37,21 +40,9 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-x-6">
-          <div className="flex items-center">
-            {active ? (
-              <>
-                <AiOutlineFire size={30} className="text-gray-900" />
-                <p>0</p>
-              </>
-            ) : (
-              <>
-                <AiFillFire
-                  size={30}
-                  className="text-gray-900 fill-amber-500"
-                />
-                <p className="text-amber-600">5</p>
-              </>
-            )}
+          <div className="flex items-center ">
+            <PiFireFill size={25} className="text-gray-900 fill-orange-500" />
+            <p className="text-gray-950">7</p>
           </div>
           <Profile />
         </div>

@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const Problem = require("../models/Problem");
 const { saveFileToFirebase } = require("../firebase/saveToFirebase");
+const Submission = require("../models/Submission");
 
 const getAllProblems = async (req, res) => {
   try {

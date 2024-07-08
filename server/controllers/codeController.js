@@ -1,8 +1,8 @@
 const { generateInputFile } = require("../generateInputFile");
 const { generateFile } = require("../generateFile");
-const {validatePythonTestCases, executePython} = require("../validatePythonTestCases");
-const {validateJavaTestCases, executeJava} = require("../validateJavaTestCases");
-const {validateCppTestCases, executeCpp} = require("../validateCppTestCases");
+const { validatePythonTestCases, executePython } = require("../validatePythonTestCases");
+const { validateJavaTestCases, executeJava } = require("../validateJavaTestCases");
+const { validateCppTestCases, executeCpp } = require("../validateCppTestCases");
 const Problem = require("../models/Problem");
 const Submission = require("../models/Submission");
 const { downloadTestInputsFromFirebase } = require("../firebase/getDataFromFirebase");
@@ -17,11 +17,11 @@ const runCode = async (req, res) => {
     const filePath = await generateFile(language, code);
     const inputPath = await generateInputFile(input);
     let output;
-    if (language === "cpp") output = await executeCpp(filePath, inputPath,5);
+    if (language === "cpp") output = await executeCpp(filePath, inputPath, 5);
     else if (language === "java")
-      output = await executeJava(filePath, inputPath,5);
+      output = await executeJava(filePath, inputPath, 5);
     else if (language === "python")
-      output = await executePython(filePath, inputPath,5);
+      output = await executePython(filePath, inputPath, 5);
     return res.json({ filePath, inputPath, output });
   } catch (error) {
     return res.status(500).json({ error: error.message, stderr: error.stderr });
@@ -77,6 +77,8 @@ const submitCode = async (req, res) => {
         timelimit
       );
 
+
+
     const submission = new Submission({
       code,
       language,
@@ -86,6 +88,9 @@ const submitCode = async (req, res) => {
     });
 
     await submission.save();
+
+    problem.Submissions += 1
+    problem.save();
 
     if (output === "accepted") {
 
@@ -121,6 +126,10 @@ const submitCode = async (req, res) => {
     });
 
     await submission.save();
+
+    const problem = await Problem.findById(problemId);
+    problem.Submissions += 1
+    problem.save();
     return res.status(500).json(err);
   }
 };

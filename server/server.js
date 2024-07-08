@@ -14,14 +14,12 @@ const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 const codeRouter = require("./routes/codeRouter");
 const problemRouter = require("./routes/problemRouter");
+const submissionRouter = require("./routes/submissionRouter");
 
 const notFound = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 
 const app = express();
-
-
-
 
 // const problemData = [
 //   {
@@ -184,6 +182,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/code", codeRouter);
 app.use("/api/v1/problems", problemRouter);
+app.use("/api/v1/submissions", submissionRouter);
 
 
 

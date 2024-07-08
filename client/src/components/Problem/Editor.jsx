@@ -7,10 +7,13 @@ import {
   Tab,
   Tabs,
   Textarea,
+  Tooltip,
 } from "@nextui-org/react";
 import { useState } from "react";
 import { Pane } from "split-pane-react";
 import axios from "axios";
+import { RotateCcw } from "lucide-react";
+import toast from "react-hot-toast";
 
 const CODE_SNIPPETS = {
   cpp: `#include<bits/stdc++.h>\nusing namespace std;\n\nint main() {\n\n\tcout<<"Hello World!!"<<endl;\n\treturn 0;\n\n}`,
@@ -37,8 +40,9 @@ const EditorCode = ({ problem }) => {
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_SERVER_API}/api/v1/code/run`,
-        payload,{
-          withCredentials:true,
+        payload,
+        {
+          withCredentials: true,
         }
       );
       console.log(data);
@@ -59,9 +63,13 @@ const EditorCode = ({ problem }) => {
       problemId: problem[0]._id,
     };
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_SERVER_API}/api/v1/code/submit`, payload, {
-        withCredentials: true,
-      });
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_SERVER_API}/api/v1/code/submit`,
+        payload,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(data);
       setRunning(false);
       setOutput(data.output);
@@ -76,6 +84,25 @@ const EditorCode = ({ problem }) => {
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
     setCode(CODE_SNIPPETS[e.target.value]);
+  };
+
+  const handleRetriveCode = async () => {
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_SERVER_API}/api/v1/submissions/problem/${
+          problem[0]._id
+        }/latestSubmission`,
+        { language },
+        {
+          withCredentials: true,
+        }
+      );
+      setCode(data.latestSubmission.code);
+      setLanguage(data.latestSubmission.language);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
   };
 
   return (
@@ -96,7 +123,14 @@ const EditorCode = ({ problem }) => {
             <SelectItem key="python">Python</SelectItem>
             <SelectItem key="java">Java</SelectItem>
           </Select>
-          <div className="flex gap-x-3">
+          <div className="flex gap-x-3 items-center">
+            <Tooltip content="Get the latest submission" size="sm">
+              <RotateCcw
+                size="13"
+                className="cursor-pointer text-gray-500"
+                onClick={handleRetriveCode}
+              />
+            </Tooltip>
             <Button variant="light" color="warning" onClick={handleRunCode}>
               Run
             </Button>
@@ -130,20 +164,22 @@ const EditorCode = ({ problem }) => {
                   />
                 </Tab>
               )}
-              <Tab key="output" title="Output">
-                <Textarea
-                  className="w-full mb-2 flex-1"
-                  placeholder="Output"
-                  value={`${
-                    output === "accepted" ||
-                    output === "failed" ||
-                    output === "time limit exceeded"
-                      ? output.toUpperCase()
-                      : output
-                  }`}
-                  readOnly
-                />
-              </Tab>
+              {!running && (
+                <Tab key="output" title="Output">
+                  <Textarea
+                    className="w-full mb-2 flex-1"
+                    placeholder="Output"
+                    value={`${
+                      output === "accepted" ||
+                      output === "failed" ||
+                      output === "time limit exceeded"
+                        ? output.toUpperCase()
+                        : output
+                    }`}
+                    readOnly
+                  />
+                </Tab>
+              )}
             </Tabs>
           </div>
         </div>

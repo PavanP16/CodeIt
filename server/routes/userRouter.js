@@ -12,6 +12,7 @@ const {
   getSingleUser,
   updateSkills,
   getSkills,
+  getLeaderboard
 } = require("../controllers/userController");
 
 router
@@ -19,6 +20,7 @@ router
   .get(authenticateUser, authorizePermissions("admin", "owner"), getAllUsers);
 
 router.route("/showMe").get(authenticateUser, showCurrentUser);
+router.route("/leaderboard").get(authenticateUser, getLeaderboard);
 router.route("/updateUser").patch(authenticateUser, updateUser);
 router.route("/updateSkills").patch(authenticateUser, updateSkills);
 router.route("/updateUserPassword").patch(authenticateUser, updateUserPassword);

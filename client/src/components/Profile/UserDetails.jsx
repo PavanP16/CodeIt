@@ -14,13 +14,24 @@ import toast from "react-hot-toast";
 
 const UserDetails = () => {
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const {saveUser, userDetails } = useGlobalContext();
+  const { saveUser, userDetails } = useGlobalContext();
+  const [numbers, setNumbers] = useState({
+    acceptedCount: 0,
+    problemsCount: 0,
+    solvedProblems: 0,
+    totalCount: 0,
+    codingScore:null,
+    pos:0,
+  });
 
   const [details, setDetails] = useState({
     email: "",
     username: "",
   });
+
+  const [submissions, setSubmissions] = useState([]);
 
   useEffect(() => {
     const getAccountUser = async () => {
@@ -34,19 +45,27 @@ const UserDetails = () => {
           }
         );
 
-        console.log(data);
-
         if (data?.user) {
           setDetails({
             email: data?.user?.email,
             username: data?.user?.username,
           });
 
-          console.log(details);
+          setNumbers({
+            acceptedCount: data?.acceptedCount,
+            problemsCount: data?.problemsCount,
+            solvedProblems: data?.solvedProblems,
+            totalCount: data?.totalCount,
+            codingScore: data?.codingScore,
+            pos: data?.pos,
+          });
+
+          setSubmissions(data?.submissions);
         }
       } catch (error) {
         console.error("User not found:", error);
       }
+      setLoading(false);
     };
     getAccountUser();
   }, []);
@@ -55,7 +74,7 @@ const UserDetails = () => {
     try {
       const response = await axios.patch(
         `${import.meta.env.VITE_SERVER_API}/api/v1/users/updateUser`,
-        { username: details.username, email: details.email},
+        { username: details.username, email: details.email },
         { withCredentials: true }
       );
       saveUser(response.data.user);
@@ -66,7 +85,13 @@ const UserDetails = () => {
     }
 
     setEdit(false);
+  };
+
+  if (loading) {
+    return <div className="">Loading....</div>;
   }
+
+  const problemsPercentage = numbers.solvedProblems/numbers.problemsCount * 100;
 
   return (
     <div className="flex flex-col gap-y-5 w-full pb-5">
@@ -86,23 +111,30 @@ const UserDetails = () => {
                   <Pencil size={20} className="text-white" />
                 </div>
                 {edit ? (
-                  <Input value={details.username} className="mt-5 px-10" onChange={(e)=>{
-                    setDetails((details) => ({...details, username: e.target.value}))
-                  } }/>
+                  <Input
+                    value={details.username}
+                    className="mt-5 px-10"
+                    onChange={(e) => {
+                      setDetails((details) => ({
+                        ...details,
+                        username: e.target.value,
+                      }));
+                    }}
+                  />
                 ) : (
                   <h1 className="mt-4 text-xl">{details.username}</h1>
                 )}
                 <div className="mt-4 flex items-center">
                   <RiMedal2Fill size={30} className="text-yellow-500" />
                   <h1 className="text-xl ml-2">
-                    32 <span className="text-lg">Rank</span>
+                    {numbers?.pos} <span className="text-lg">Rank</span>
                   </h1>
                 </div>
               </div>
               <hr className="mt-5 mx-5" />
               <div className="mt-5 flex w-full items-center justify-center gap-x-5">
                 <p>Current Solved Questions</p>
-                <Circular value={10} size="lg" label={"Solved"} />
+                <Circular value={problemsPercentage} size="lg" label={"Solved"} />
               </div>
             </div>
           </div>
@@ -129,7 +161,7 @@ const UserDetails = () => {
                 </div>
 
                 <div
-                  className=" bg-red-500 p-3 flex gap-x-2 items-center mr-4 rounded-lg hover:bg-red-600 hover:cursor-pointer"
+                  className=" bg-red-600 p-3 flex gap-x-2 items-center mr-4 rounded-lg hover:bg-red-700 hover:cursor-pointer"
                   onClick={() => setEdit((edit) => !edit)}
                 >
                   <X className="fill-white text-white" />
@@ -143,9 +175,15 @@ const UserDetails = () => {
                 <h1 className="text-base text-gray-400">Email</h1>
 
                 {edit ? (
-                  <Input value={details.email} onChange={(e)=>{
-                    setDetails((details) => ({...details, email: e.target.value}))
-                  } }/>
+                  <Input
+                    value={details.email}
+                    onChange={(e) => {
+                      setDetails((details) => ({
+                        ...details,
+                        email: e.target.value,
+                      }));
+                    }}
+                  />
                 ) : (
                   <h1 className="text-xl">{details.email}</h1>
                 )}
@@ -162,7 +200,7 @@ const UserDetails = () => {
               <div className="flex items-center p-6 rounded-2xl gap-x-10 bg-gray-100 w-fit shadow">
                 <div className="flex flex-col gap-y-3 w-[7vw]">
                   <h1 className="text-sm">Overall Coding Score</h1>
-                  <h1 className="text-3xl">56</h1>
+                  <h1 className="text-3xl">{numbers.codingScore}</h1>
                 </div>
                 <img
                   src={img}
@@ -173,7 +211,7 @@ const UserDetails = () => {
               <div className="flex items-center p-6 rounded-2xl gap-x-10 bg-gray-100 w-fit shadow">
                 <div className="flex flex-col gap-y-3 w-[7vw]">
                   <h1 className="text-sm">Total Problems Solved</h1>
-                  <h1 className="text-3xl">10</h1>
+                  <h1 className="text-3xl">{numbers.solvedProblems}</h1>
                 </div>
                 <img
                   src={tick}
@@ -196,24 +234,12 @@ const UserDetails = () => {
         </div>
       </div>
       <div className="bg-white flex rounded-lg p-4 pb-5 mr-4 ">
-        <div className="flex-[6]">
-          <h1 className="text-2xl font-semibold">Latest Submissions</h1>
+        <div className="flex-[4]">
+          <h1 className="text-2xl font-semibold">Successful Submissions</h1>
           <div className="mt-5 flex flex-col gap-y-6">
-            <LatestSubmission
-              sols={7}
-              title={"Missing in Array"}
-              diff={"Hard"}
-            />
-            <LatestSubmission
-              sols={22}
-              title={"Indexes of Subarray Sum"}
-              diff={"Medium"}
-            />
-            <LatestSubmission
-              sols={47}
-              title={"Array Duplicates"}
-              diff={"Easy"}
-            />
+            {submissions.map((sub, idx) => {
+              return <LatestSubmission key={idx} sub={sub} />;
+            })}
           </div>
         </div>
         <div className="flex-[4]"></div>
