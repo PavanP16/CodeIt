@@ -3,6 +3,7 @@ const {
     getProblemById,
     getProblemBySlug,
     createProblem,
+    editProblem,
 } = require("../controllers/problemController");
 const upload = require("../multer/upload");
 const { authenticateUser } = require("../middlewares/authentication");
@@ -23,6 +24,8 @@ router.route("/").get(authenticateUser,getAllProblems).post(
 
 
 router.route("/:slug").get(authenticateUser,getProblemBySlug);
+router.route("/update/:id").post(authenticateUser,upload.none(),editProblem);
+
 
 router.route("/prob/:id").get(authenticateUser,getProblemById)
 

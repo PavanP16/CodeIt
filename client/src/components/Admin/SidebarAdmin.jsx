@@ -18,26 +18,7 @@ const SidebarAdmin = () => {
       </div>
       <div className="flex flex-col justify-between">
         <>
-          <NavLink
-            to="home"
-            style={({ isActive }) =>
-              isActive
-                ? {
-                    background: "rgb(255 251 235)",
-                    borderRadius: 5,
-                    color: "rgb(245 158 11)",
-                  }
-                : {}
-            }
-            className={
-              "mt-2 flex items-center gap-x-2 text-gray-500 font-semibold ml-2 pl-3 px-2 py-3 rounded-md " +
-              styles.box
-            }
-          >
-            <UserRound size={17} className={styles.inicon} />
-            <h1 className={"text-sm " + styles.intext}>Users</h1>
-          </NavLink>
-
+  
           <NavLink
             to="problems"
             style={({ isActive }) =>

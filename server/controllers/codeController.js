@@ -116,6 +116,9 @@ const submitCode = async (req, res) => {
         return res.json({ filepath, inputPath, output });
       }
     }
+
+    return res.json({ filepath, inputPath, output });
+
   } catch (err) {
     const submission = new Submission({
       userId: req.user.userId,

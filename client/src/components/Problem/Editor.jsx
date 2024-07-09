@@ -45,12 +45,11 @@ const EditorCode = ({ problem }) => {
           withCredentials: true,
         }
       );
-      console.log(data);
       setRunning(false);
       setOutput(data.output);
     } catch (error) {
-      setRunning(false);
       console.log(error);
+      setRunning(false);
       setOutput(error.response.data.stderr);
     }
   };
@@ -72,7 +71,7 @@ const EditorCode = ({ problem }) => {
       );
       console.log(data);
       setRunning(false);
-      setOutput(data.output);
+      if (data.output) setOutput(data.output) || "";
     } catch (error) {
       console.log(error);
       setRunning(false);
@@ -164,14 +163,14 @@ const EditorCode = ({ problem }) => {
                   />
                 </Tab>
               )}
-              {!running && (
+              {
                 <Tab key="output" title="Output">
                   <Textarea
                     className="w-full mb-2 flex-1"
                     placeholder="Output"
                     value={`${
                       output === "accepted" ||
-                      output === "failed" ||
+                      output === "rejected" ||
                       output === "time limit exceeded"
                         ? output.toUpperCase()
                         : output
@@ -179,7 +178,7 @@ const EditorCode = ({ problem }) => {
                     readOnly
                   />
                 </Tab>
-              )}
+              }
             </Tabs>
           </div>
         </div>

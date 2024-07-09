@@ -100,7 +100,7 @@ const { downloadJavaOutputFromFirebase } = require("./firebase/getDataFromFireba
             if (normalize(generatedOutput) === normalize(expectedOutput)) {
               resolve("accepted");
             } else {
-              resolve("failed");
+              resolve("rejected");
             }
           } catch (readError) {
             reject(readError);

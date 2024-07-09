@@ -22,7 +22,6 @@ import Resume from "./components/Profile/Resume";
 import Submissions from "./components/Profile/Submissions";
 import ProblemDetail from "./pages/ProblemDetail";
 import Admin from "./pages/Admin";
-import AdminHome from "./components/Admin/AdminHome";
 import AdminProblems from "./components/Admin/AdminProblems";
 import AddProblem from "./components/Admin/AddProblem";
 
@@ -61,7 +60,6 @@ const Router = createBrowserRouter(
           <Route path="submissions" element={<Submissions />} />
         </Route>
         <Route path="admin" element={<Admin />}>
-          <Route path="home" element={<AdminHome />} />
           <Route path="problems" element={<AdminProblems />} />
           <Route path="createproblem" element={<AddProblem />} />
         </Route>

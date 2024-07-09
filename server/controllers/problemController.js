@@ -49,6 +49,8 @@ const createProblem = async (req, res) => {
     } = req.body;
     const { input, cppoutput, javaoutput, pythonoutput } = req.files;
 
+    console.log(req.body);
+
     if (!input && !cppoutput && !javaoutput && !pythonoutput) {
       return res
         .status(400)
@@ -111,6 +113,69 @@ const createProblem = async (req, res) => {
 };
 
 
+const editProblem = async (req, res) => {
+  try {
+    const {
+      slug,
+      description,
+      title,
+      difficulty,
+      constraints,
+      tags,
+      testCases,
+    } = req.body;
+
+    console.log(req.body);
+
+
+    console.log(req.params);
+    const id = req.params.id;
+
+    // Ensure an ID is provided
+    if (!id) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Problem ID is required" });
+    }
+
+    // Prepare update data object
+    const updateData = {};
+    updateData.createdBy = req.user.userId;
+
+    // Find the existing problem by ID
+    let existingProblem = await Problem.findById(id);
+    // Handle case where problem does not exist
+    if (!existingProblem) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Problem not found" });
+    }
+
+    // Update fields if provided in request body
+    if (testCases) updateData.testCases = testCases;
+    if (slug) updateData.slug = slug;
+    if (description) updateData.description = description;
+    if (title) updateData.title = title;
+    if (difficulty) updateData.difficulty = difficulty;
+    if (constraints) updateData.constraints = constraints;
+    if (tags) updateData.tags = tags;
+
+    existingProblem = await Problem.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ problem: existingProblem, message: "Problem updated!" });
+  } catch (error) {
+    console.error("Error editing problem:", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Failed to update problem" });
+  }
+};
+
+
 
 
 module.exports = {
@@ -118,4 +183,5 @@ module.exports = {
   getProblemBySlug,
   getProblemById,
   createProblem,
+  editProblem,
 };

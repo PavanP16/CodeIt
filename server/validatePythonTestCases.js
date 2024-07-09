@@ -97,7 +97,7 @@ const { downloadPythonOutputFromFirebase } = require("./firebase/getDataFromFire
             if (normalize(generatedOutput) === normalize(expectedOutput)) {
               resolve("accepted");
             } else {
-              resolve("failed");
+              resolve("rejected");
             }
           } catch (readError) {
             reject(readError);

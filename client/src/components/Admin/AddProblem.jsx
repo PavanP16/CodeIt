@@ -64,7 +64,6 @@ const AddProblem = () => {
     });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,10 +75,10 @@ const AddProblem = () => {
     formData.append("description", details.description);
     formData.append("difficulty", details.difficulty);
     formData.append("constraints", details.constraints);
-    formData.append("input", details.input); 
-    formData.append("cppoutput", details.cppoutput); 
-    formData.append("javaoutput", details.javaoutput); 
-    formData.append("pythonoutput", details.pythonoutput); 
+    formData.append("input", details.input);
+    formData.append("cppoutput", details.cppoutput);
+    formData.append("javaoutput", details.javaoutput);
+    formData.append("pythonoutput", details.pythonoutput);
 
     testCases.forEach((testCase, index) => {
       formData.append(`siteCases[${index}][input]`, testCase.input);
@@ -94,22 +93,25 @@ const AddProblem = () => {
     console.log(details);
 
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_API}/api/v1/problems`, formData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_API}/api/v1/problems`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       toast.success("Problem added successfully");
     } catch (error) {
       toast.error("Failed to add problem");
     }
   };
 
-
   return (
-    <div className="bg-white p-4">
-      <h1 className="mt-5 text-3xl mb-10">Add a Problem</h1>
+    <div className="p-5 h-fit mb-10 mr-3 bg-white rounded-lg">
+      <h1 className="text-3xl mb-10">Add a Problem</h1>
       <div className="flex gap-x-5 mb-5">
         <Input
           label="Title"
@@ -257,7 +259,12 @@ const AddProblem = () => {
         </div>
       </div>
       <div className="py-10 w-full">
-        <Button className="w-full h-14 text-xl text-gray-700" onClick={handleSubmit}>Add</Button>
+        <Button
+          className="w-full h-14 text-xl text-gray-700"
+          onClick={handleSubmit}
+        >
+          Add
+        </Button>
       </div>
     </div>
   );

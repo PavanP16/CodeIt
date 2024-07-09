@@ -30,8 +30,9 @@ const AdminProblems = () => {
   if (loading) return <div>Loading</div>;
 
   return (
-    <div className="h-full bg-white">
-      <table className="w-[95%] mx-auto mt-8 bg-white">
+    <div className="p-5 h-fit bg-white mr-5 rounded-lg">
+      <h1 className="text-3xl">Problems List</h1>
+      <table className="w-[100%] mx-auto mt-8 bg-white">
         <thead className="bg-gray-100 h-12">
           <tr>
             <th className="font-semibold text-left text-md py-5 px-2">#</th>
@@ -45,9 +46,9 @@ const AdminProblems = () => {
               Submissions
             </th>
             <th className="font-semibold text-left text-md py-3 px-2] ">
-              Success rate
+              No. of Users Solved
             </th>
-            <th className="font-semibold text-left text-md py-3 pr-4">
+            <th className="font-semibold text-left text-md py-3 pr-4 w-[12%]">
               Action
             </th>
           </tr>

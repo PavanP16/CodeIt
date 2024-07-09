@@ -11,6 +11,7 @@ import { Input } from "@nextui-org/react";
 import { useGlobalContext } from "../../../ContextAPI/AuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import PieChartSums from "./PieChartSums";
 
 const UserDetails = () => {
   const [edit, setEdit] = useState(false);
@@ -22,8 +23,8 @@ const UserDetails = () => {
     problemsCount: 0,
     solvedProblems: 0,
     totalCount: 0,
-    codingScore:null,
-    pos:0,
+    codingScore: null,
+    pos: 0,
   });
 
   const [details, setDetails] = useState({
@@ -32,6 +33,7 @@ const UserDetails = () => {
   });
 
   const [submissions, setSubmissions] = useState([]);
+  const [dataStats,setDataStats ] = useState([]);
 
   useEffect(() => {
     const getAccountUser = async () => {
@@ -44,6 +46,8 @@ const UserDetails = () => {
             withCredentials: true,
           }
         );
+
+        console.log(data);
 
         if (data?.user) {
           setDetails({
@@ -61,6 +65,7 @@ const UserDetails = () => {
           });
 
           setSubmissions(data?.submissions);
+          setDataStats(data?.dataStats)
         }
       } catch (error) {
         console.error("User not found:", error);
@@ -91,7 +96,8 @@ const UserDetails = () => {
     return <div className="">Loading....</div>;
   }
 
-  const problemsPercentage = numbers.solvedProblems/numbers.problemsCount * 100;
+  const problemsPercentage =
+    (numbers.solvedProblems / numbers.problemsCount) * 100;
 
   return (
     <div className="flex flex-col gap-y-5 w-full pb-5">
@@ -134,7 +140,11 @@ const UserDetails = () => {
               <hr className="mt-5 mx-5" />
               <div className="mt-5 flex w-full items-center justify-center gap-x-5">
                 <p>Current Solved Questions</p>
-                <Circular value={problemsPercentage} size="lg" label={"Solved"} />
+                <Circular
+                  value={Math.ceil(problemsPercentage)}
+                  size="lg"
+                  label={"Solved"}
+                />
               </div>
             </div>
           </div>
@@ -200,7 +210,7 @@ const UserDetails = () => {
               <div className="flex items-center p-6 rounded-2xl gap-x-10 bg-gray-100 w-fit shadow">
                 <div className="flex flex-col gap-y-3 w-[7vw]">
                   <h1 className="text-sm">Overall Coding Score</h1>
-                  <h1 className="text-3xl">{numbers.codingScore}</h1>
+                  <h1 className="text-3xl">{Math.ceil(numbers.codingScore)}</h1>
                 </div>
                 <img
                   src={img}
@@ -242,7 +252,10 @@ const UserDetails = () => {
             })}
           </div>
         </div>
-        <div className="flex-[4]"></div>
+        <div className="flex-[4] flex flex-col">
+          <h1 className="mt-5 text-2xl text-center font-semibold">Solved Problems</h1>
+          <PieChartSums dataStats={dataStats}/>
+        </div>
       </div>
     </div>
   );

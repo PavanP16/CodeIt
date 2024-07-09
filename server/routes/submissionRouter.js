@@ -5,6 +5,7 @@ const {
     deleteSubmission,
     getSingleSubmission,
     retrieveLastSubmittedCode,
+    getUserStats,
 } = require("../controllers/submissionController");
 const {
     authenticateUser,
@@ -24,6 +25,7 @@ router
     )
 
 router.route('/user').get(authenticateUser, getUserSubmissions);
+router.route('/stats').get(authenticateUser, getUserStats);
 
 router
     .route("/:id")

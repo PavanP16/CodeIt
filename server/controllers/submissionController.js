@@ -74,6 +74,47 @@ const retrieveLastSubmittedCode = async (req, res) => {
     }
 };
 
+const getUserStats = async (req, res) => {
+
+    const { userId } = req.user;
+    try {
+        // Aggregate query to count submissions by status for a specific user
+        const result = await Submission.aggregate([
+            { $match: { userId: userId } },
+            {
+                $group: {
+                    _id: {
+                        $cond: [
+                            { $eq: ["$status", "accepted"] },
+                            "accepted",
+                            "rejected"
+                        ]
+                    },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        // Initialize the response with all possible statuses and zero counts
+        const subs = [
+            { id: "accepted", label: "Accepted", value: 0 },
+            { id: "rejected", label: "Rejected", value: 0 }
+        ];
+
+        // Merge the aggregation result with the initialized subs
+        result.forEach(item => {
+            const index = subs.findIndex(d => d.id === item._id);
+            if (index !== -1) {
+                subs[index].value = item.count;
+            }
+        });
+
+        return res.status(StatusCodes.OK).json({ subs });
+    } catch (error) {
+        console.error("Error fetching submission status count:", error);
+        return res.status(500).json(error);
+    }
+}
 
 const deleteSubmission = async (req, res) => {
     const id = req.params.id;
@@ -92,4 +133,4 @@ const deleteSubmission = async (req, res) => {
     }
 };
 
-module.exports = { deleteSubmission, getAllSubmissions, retrieveLastSubmittedCode, getUserSubmissions, getSingleSubmission }
+module.exports = { deleteSubmission, getAllSubmissions, retrieveLastSubmittedCode, getUserSubmissions, getSingleSubmission, getUserStats }

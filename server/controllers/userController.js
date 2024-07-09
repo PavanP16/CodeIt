@@ -45,9 +45,34 @@ const getSingleUser = async (req, res) => {
 
     const codingScore = acceptedcount / totalCount * 100;
 
-    const allUsers = await User.find().sort({ score: -1 });
+    const allUsers = await User.find().sort({ score: 1 });
 
     const userPosition = allUsers.findIndex(user => user._id.toString() === userId);
+
+    const difficulties = ["Easy", "Medium", "Hard"];
+
+    // Aggregate query to count problems solved by the user, categorized by difficulty
+    const resStats = await Problem.aggregate([
+      { $match: { solvedBy: userId } },
+      { $group: { _id: "$difficulty", count: { $sum: 1 } } }
+    ]);
+
+    // Initialize the response with all possible difficulties and zero counts
+    const dataStats = difficulties.map(difficulty => ({
+      id: difficulty,
+      label: difficulty,
+      value: 0
+    }));
+
+    // Merge the aggregation result with the initialized data
+    resStats.forEach(item => {
+      const index = dataStats.findIndex(d => d.id === item._id);
+      if (index !== -1) {
+        dataStats[index].value = item.count;
+      }
+    });
+
+
     const result = await Submission.aggregate([
       {
         $match: { userId } // Match submissions for the specified userId
@@ -67,9 +92,9 @@ const getSingleUser = async (req, res) => {
     ]);
 
     if (result.length > 0) {
-      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: result[0].solvedProblemCount, totalCount, acceptedcount, problemsCount, codingScore, pos: userPosition + 1 });
+      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: result[0].solvedProblemCount, totalCount, acceptedcount, problemsCount, codingScore, pos: userPosition + 1,dataStats });
     } else {
-      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: 0, totalCount, acceptedcount, problemsCount, codingScore, });
+      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: 0, totalCount, acceptedcount, problemsCount, codingScore,dataStats });
     }
 
   } catch (error) {
@@ -189,7 +214,7 @@ const getLeaderboard = async (req, res) => {
         }
       },
       {
-        $sort: { score: -1 }
+        $sort: { score: 1 }
       }
     ]);
 

@@ -3,6 +3,7 @@ import Submission from "./Submission";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Pagination } from "@nextui-org/pagination";
+import PieChartSubmissions from "./PieChartSubmissions";
 
 const Submissions = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -34,11 +35,21 @@ const Submissions = () => {
 
   return (
     <div className="bg-white rounded-lg p-4 pb-5 mr-4 min-h-[80vh]">
-      <h1 className="text-2xl font-semibold">All Submissions</h1>
-      <div className="mt-5 w-full flex flex-col gap-10">
-        {submissions?.map((sub, idx) => {
-          return <Submission key={idx} sub={sub} />;
-        })}
+      <div className="flex">
+        <div className="flex-[3]">
+          <h1 className="text-2xl font-semibold">All Submissions</h1>
+          <div className="mt-5 w-full flex flex-col gap-10">
+            {submissions?.map((sub, idx) => {
+              return <Submission key={idx} sub={sub} />;
+            })}
+          </div>
+        </div>
+        <div className="flex-[3]">
+          <h1 className="mt-5 text-2xl text-center font-semibold">
+           Accepted/ Rejected
+          </h1>
+          <PieChartSubmissions />
+        </div>
       </div>
       <div className="mt-5 ml-4">
         <Pagination

@@ -8,7 +8,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/react";
-import { Trash } from "lucide-react";
+import { Code, Trash } from "lucide-react";
 import Tag from "../ui/Tag";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -64,9 +64,43 @@ const Submission = ({ sub }) => {
   }, []);
 
   return (
-    <div className="w-[60%] flex flex-col justify-between bg-gray-50 shadow-md rounded-xl py-6 px-4">
+    <div className="w-full flex flex-col justify-between bg-gray-50 shadow-md rounded-xl py-6 px-4">
       <div className="flex justify-between w-full">
-        <h1 className="text-lg">{problem?.title}</h1>
+        <div className="flex gap-x-3 items-center">
+          <h1 className="text-lg">{problem?.title}{" "}</h1>
+          <div
+            className="text-sm text-inherit flex items-end gap-x-1 hover:underline hover:cursor-pointer"
+            onClick={onOpen}
+          >
+            <h1>&lt;/&gt;</h1>
+            <Modal
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+              size="5xl"
+              backdrop="blur"
+            >
+              <ModalContent>
+                {() => (
+                  <>
+                    <ModalHeader className="flex flex-col gap-1">
+                      Your Submission
+                    </ModalHeader>
+                    <ModalBody>
+                      <Editor
+                        height="70vh"
+                        options={{ readOnly: true }}
+                        language={sub?.language}
+                        theme="vs-light"
+                        value={sub?.code}
+                      />
+                    </ModalBody>
+                    <ModalFooter></ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
+          </div>
+        </div>
         <div className="p-2 ml-2 hover:bg-red-100 hover:text-red-600 hover:cursor-pointer w-fit text-gray-900 rounded-xl">
           <Trash size={20} className="text-inherit" />
         </div>
@@ -98,12 +132,17 @@ const Submission = ({ sub }) => {
             </div>
           )}
         </div>
-        <div
+        {/* <div
           className="text-sm text-inherit flex items-end gap-x-1 hover:underline hover:cursor-pointer"
           onClick={onOpen}
         >
-          <h1>Code</h1>
-          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
+          <h1>Code&lt;/&gt;</h1>
+          <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            size="5xl"
+            backdrop="blur"
+          >
             <ModalContent>
               {() => (
                 <>
@@ -124,7 +163,7 @@ const Submission = ({ sub }) => {
               )}
             </ModalContent>
           </Modal>
-        </div>
+        </div> */}
       </div>
     </div>
   );
