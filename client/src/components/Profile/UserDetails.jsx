@@ -243,7 +243,7 @@ const UserDetails = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white flex rounded-lg p-4 pb-5 mr-4 ">
+      <div className="bg-white flex min-h-[80vh] rounded-lg p-4 pb-5 mr-4 ">
         <div className="flex-[4]">
           <h1 className="text-2xl font-semibold">Successful Submissions</h1>
           <div className="mt-5 flex flex-col gap-y-6">

@@ -6,6 +6,7 @@ import { TfiWrite } from "react-icons/tfi";
 import { useGlobalContext } from "../../../ContextAPI/AuthContext";
 import { PiNotepad } from "react-icons/pi";
 import { FaDatabase } from "react-icons/fa6";
+import toast from "react-hot-toast";
 
 const SidebarAdmin = () => {
   const navigate = useNavigate();

@@ -15,9 +15,16 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const RowProblem = ({ idx, title, CreatedOn, Submissions, prob }) => {
+const RowProblem = ({
+  idx,
+  title,
+  CreatedOn,
+  Submissions,
+  prob,
+  AllProblems,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [modalType, setModalType] = useState(null);
+  const [modalType, setModalType] = useState("edit");
   const tagItemsList = prob?.tags.join();
 
   console.log(prob);
@@ -140,8 +147,31 @@ const RowProblem = ({ idx, title, CreatedOn, Submissions, prob }) => {
       );
       console.log(data);
       toast.success("Problem updated successfully");
+      onClose();
+      AllProblems();
     } catch (error) {
+      console.log(error);
       toast.error("Failed to update problem");
+      onClose();
+    }
+  };
+
+  const deleteProblem = async () => {
+    try {
+      const { data } = await axios.delete(
+        `${import.meta.env.VITE_SERVER_API}/api/v1/problems/prob/${prob?._id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(data);
+      toast.success("Problem deleted successfully");
+      onClose();
+      AllProblems();
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete problem");
+      onClose();
     }
   };
 
@@ -155,17 +185,25 @@ const RowProblem = ({ idx, title, CreatedOn, Submissions, prob }) => {
       <td>
         <div className="flex items-center gap-x-2">
           <div
-            className="bg-amber-200 w-fit p-3 text-amber-500 rounded-lg hover:bg-amber-300 hover:cursor-pointer"
-            onClick={onOpen}
+            className="w-fit p-3 text-amber-500 rounded-lg hover:bg-amber-500 hover:text-white hover:cursor-pointer"
+            onClick={openEditModal}
           >
             <Pencil size={20} className="text-inherit" />
-            <Modal
-              size="5xl"
-              isOpen={isOpen}
-              onClose={onClose}
-              backdrop="blur"
-              scrollBehavior="inside"
-            >
+          </div>
+          <div
+            className="w-fit p-3 text-red-500 rounded-lg hover:bg-red-500 hover:text-white hover:cursor-pointer"
+            onClick={openDeleteModal}
+          >
+            <Trash2 size={20} className="text-inherit" />
+          </div>
+          <Modal
+            size={modalType === "edit" ? "5xl" : "md"}
+            isOpen={isOpen}
+            onClose={onClose}
+            backdrop="blur"
+            scrollBehavior="inside"
+          >
+            {modalType === "edit" ? (
               <ModalContent>
                 {(onClose) => (
                   <>
@@ -211,9 +249,10 @@ const RowProblem = ({ idx, title, CreatedOn, Submissions, prob }) => {
                         />
                         <Input
                           label="Time Limit"
+                          type="number"
                           value={details.timelimit}
                           className="flex-[1]"
-                          name="timeLimit"
+                          name="timelimit"
                           onChange={handleDetailChange}
                         />
                         <Input
@@ -280,14 +319,28 @@ const RowProblem = ({ idx, title, CreatedOn, Submissions, prob }) => {
                   </>
                 )}
               </ModalContent>
-            </Modal>
-          </div>
-          <div
-            className="bg-red-200 w-fit p-3 text-red-500 rounded-lg hover:bg-red-300 hover:cursor-pointer"
-            onClick={onOpen}
-          >
-            <Trash2 size={20} className="text-inherit" />
-          </div>
+            ) : modalType === "delete" ? (
+              <ModalContent>
+                {(onClose) => (
+                  <>
+                    <ModalHeader className="flex flex-col gap-1">
+                      Confirm Deletion
+                    </ModalHeader>
+                    <ModalBody>
+                      <p className="font-semibold">
+                        Are you sure you want to delete this problem?
+                      </p>
+                      <p>{prob?.title}</p>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="danger" onClick={deleteProblem}>Delete</Button>
+                      <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            ) : null}
+          </Modal>
         </div>
       </td>
     </tr>

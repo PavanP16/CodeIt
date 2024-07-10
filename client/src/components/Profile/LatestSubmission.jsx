@@ -45,7 +45,15 @@ const LatestSubmission = ({ sub }) => {
   return (
     <div className="w-full flex justify-between bg-gray-50 shadow rounded-xl py-6 px-4">
       <div className="flex flex-col w-[50%] gap-y-4">
-        <h1>{problem?.title}({sub?.language === "cpp" ? "C++" :sub?.language === "java" ? "Java" : "Python"})</h1>
+        <h1>
+          {problem?.title}(
+          {sub?.language === "cpp"
+            ? "C++"
+            : sub?.language === "java"
+            ? "Java"
+            : "Python"}
+          )
+        </h1>
         <div className="flex flex-wrap gap-2">
           {problem?.tags?.map((tg, id) => {
             return <Tag key={id} value={tg} size="sm" />;
@@ -54,10 +62,11 @@ const LatestSubmission = ({ sub }) => {
       </div>
 
       <div className="flex flex-col items-center gap-y-3">
-        <div className="bg-emerald-600 px-5 py-2 rounded-lg hover:bg-emerald-700 hover:cursor-pointer">
-          <h1 className="text-white" onClick={onOpen}>
-            View Solution
-          </h1>
+        <div
+          className="bg-emerald-600 px-5 py-2 rounded-lg hover:bg-emerald-700 hover:cursor-pointer"
+          onClick={onOpen}
+        >
+          <h1 className="text-white">View Solution</h1>
           <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
             <ModalContent>
               {() => (

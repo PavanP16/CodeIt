@@ -4,15 +4,29 @@ import Tag from "../ui/Tag";
 import Snippet from "../ui/Snippet";
 import Example from "./Example";
 import { Dot } from "lucide-react";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { useGlobalContext } from "../../../ContextAPI/AuthContext";
 
 const Problem = ({ problem }) => {
+  const { userDetails } = useGlobalContext();
+  const exists =
+    problem[0]?.solvedBy.findIndex((user) => user._id === userDetails._id) !==
+    -1;
+  console.log(exists);
+
   return (
     <div className="py-3 pl-4 border min-h-screen border-gray-200">
       <h1 className="text-xl tracking-wide font-semibold">
         1.{problem[0].title}
       </h1>
-      <div className="mt-3">
+      <div className="mt-3 flex justify-between items-center">
         <Tag variant={"flat"} value={problem[0].difficulty} size={"sm"} />
+        {exists && (
+          <div className="mr-10 flex items-end gap-x-1">
+            <p className="text-sm">Solved</p>
+            <IoMdCheckmarkCircleOutline size={17} className="fill-[#28ae40]" />
+          </div>
+        )}
       </div>
 
       <p className="mt-3 text-sm mr-4 tracking-wider leading-6">

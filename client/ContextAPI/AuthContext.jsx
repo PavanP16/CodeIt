@@ -5,14 +5,19 @@ const AppContext = createContext();
 // eslint-disable-next-line react/prop-types
 const AppProvider = ({ children }) => {
   const [userDetails, setUser] = useState(null);
+  const [userRole, setUserRole] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   const saveUser = (user) => {
     setUser(user);
   };
+  const saveUserRole = (role) => {
+    setUserRole(role);
+  };
 
   const deleteUser = () => {
     setUser(null);
+    setUserRole(null);
   };
 
   const fetchUser = async () => {
@@ -20,7 +25,9 @@ const AppProvider = ({ children }) => {
       const { data } = await axios.get(`${import.meta.env.VITE_SERVER_API}/api/v1/users/showMe`, {
         withCredentials: true,
       });
+      console.log(data);
       saveUser(data?.user);
+      saveUserRole(data?.role.role)
     } catch (error) {
         deleteUser();
     }
@@ -49,6 +56,7 @@ const AppProvider = ({ children }) => {
         userDetails,
         isLoading,
         logoutUser,
+        userRole,
       }}
     >
       {children}

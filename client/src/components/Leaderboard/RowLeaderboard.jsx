@@ -5,6 +5,7 @@ import second from "../../assets/second.svg";
 import third from "../../assets/third.svg";
 
 const RowLeaderboard = ({ idx, rs }) => {
+
   return (
       <TableRow className="py-3">
         <TableCell>

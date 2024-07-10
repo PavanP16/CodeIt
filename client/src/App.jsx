@@ -24,6 +24,7 @@ import ProblemDetail from "./pages/ProblemDetail";
 import Admin from "./pages/Admin";
 import AdminProblems from "./components/Admin/AdminProblems";
 import AddProblem from "./components/Admin/AddProblem";
+import Protectedadmin from "../ProtectedRoute/ProtectedAdmin";
 
 const Root = () => {
   const path = useLocation();
@@ -59,7 +60,14 @@ const Router = createBrowserRouter(
           <Route path="skills" element={<Resume />} />
           <Route path="submissions" element={<Submissions />} />
         </Route>
-        <Route path="admin" element={<Admin />}>
+        <Route
+          path="admin"
+          element={
+            <Protectedadmin>
+              <Admin />
+            </Protectedadmin>
+          }
+        >
           <Route path="problems" element={<AdminProblems />} />
           <Route path="createproblem" element={<AddProblem />} />
         </Route>

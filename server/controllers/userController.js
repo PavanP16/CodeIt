@@ -45,7 +45,7 @@ const getSingleUser = async (req, res) => {
 
     const codingScore = acceptedcount / totalCount * 100;
 
-    const allUsers = await User.find().sort({ score: 1 });
+    const allUsers = await User.find().sort({ score: -1 });
 
     const userPosition = allUsers.findIndex(user => user._id.toString() === userId);
 
@@ -92,9 +92,9 @@ const getSingleUser = async (req, res) => {
     ]);
 
     if (result.length > 0) {
-      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: result[0].solvedProblemCount, totalCount, acceptedcount, problemsCount, codingScore, pos: userPosition + 1,dataStats });
+      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: result[0].solvedProblemCount, totalCount, acceptedcount, problemsCount, codingScore, pos: userPosition + 1, dataStats });
     } else {
-      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: 0, totalCount, acceptedcount, problemsCount, codingScore,dataStats });
+      return res.status(StatusCodes.OK).json({ user, submissions, solvedProblems: 0, totalCount, acceptedcount, problemsCount, codingScore, pos: userPosition + 1, dataStats });
     }
 
   } catch (error) {
@@ -103,7 +103,10 @@ const getSingleUser = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
-  return res.status(StatusCodes.OK).json({ user: req.user });
+
+  const userRole = await User.findById(req.user.userId);
+  console.log(userRole)
+  return res.status(StatusCodes.OK).json({ user: req.user, role: userRole });
 };
 
 const updateSkills = async (req, res) => {
@@ -190,35 +193,9 @@ const updateUserPassword = async (req, res) => {
 const getLeaderboard = async (req, res) => {
 
   try {
-    const usersWithSubmissionCounts = await User.aggregate([
-      {
-        $lookup: {
-          from: "submissions",
-          localField: "_id",
-          foreignField: "userId",
-          as: "submissions"
-        }
-      },
-      {
-        $addFields: {
-          submissionCount: { $size: "$submissions" }
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          username: 1,
-          email: 1,
-          score: 1,
-          submissionCount: 1
-        }
-      },
-      {
-        $sort: { score: 1 }
-      }
-    ]);
+    const allUsers = await User.find().sort({ score: -1 });
 
-    return res.status(StatusCodes.OK).json({ users: usersWithSubmissionCounts });
+    return res.status(StatusCodes.OK).json({ users: allUsers });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }

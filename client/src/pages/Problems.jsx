@@ -19,6 +19,8 @@ import axios from "axios";
 const Problems = () => {
   const navigator = useNavigate();
   const [problems, setProblems] = useState([]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const topics = [
     "DP",
@@ -64,7 +66,21 @@ const Problems = () => {
     AllProblems();
   }, []);
 
+  const handleDifficultyChange = (e) => {
+    setSelectedDifficulty(e.target.value);
+    console.log(e.target.value);
+  };
 
+  const filteredProblems = problems.filter((problem) => {
+    const matchesDifficulty =
+      selectedDifficulty === "All" ||
+      problem?.difficulty === selectedDifficulty;
+
+    const matchesSearch =
+      searchTerm === "" ||
+      problem.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesDifficulty && matchesSearch;
+  });
 
   if (loading) return <div>Loading</div>;
 
@@ -86,37 +102,29 @@ const Problems = () => {
         </div>
       </div>
       <div className="w-52 flex-[9] p-5 bg-white h-fit shadow-lg rounded-md">
-        <div className="flex gap-x-6">
+        <div className="flex justify-around gap-x-6">
           <div className="">
-            <Select size="sm" placeholder="Select Difficulty" className="w-32">
+            <Select
+              size="sm"
+              placeholder="Select Difficulty"
+              className="w-32"
+              onChange={handleDifficultyChange}
+            >
               {diff.map((diff, idx) => (
-                <SelectItem
-                  key={idx}
-                  // className={
-                  //   diff == "Easy"
-                  //     ? "text-green-500"
-                  //     : diff == "Medium"
-                  //     ? "text-amber-500"
-                  //     : diff == "Hard"
-                  //     ? "text-red-500"
-                  //     : "success"
-                  // }
-                >
+                <SelectItem key={diff} value={diff}>
                   {diff}
                 </SelectItem>
               ))}
             </Select>
           </div>
-          <Select size="sm" placeholder="Status" className="w-32">
-            {sta.map((sta, idx) => (
-              <SelectItem key={idx}>{sta}</SelectItem>
-            ))}
-          </Select>
           <Input
-            isClearable
-            className="w-[50%]"
+            isClearable={true}
+            className="w-[60%]"
             size="sm"
             placeholder="Type to search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onClear={() => setSearchTerm("")}
             startContent={
               <Search
                 size={15}
@@ -126,18 +134,42 @@ const Problems = () => {
           />
         </div>
 
-        <div className="mt-5 bg-white h-fit">
+        <div className="mt-5 bg-white flex flex-col justify-between h-[61vh]">
           <Table isStriped shadow="none">
             <TableHeader>
-              <TableColumn className="font-bold text-gray-600">S.No</TableColumn>
-              <TableColumn className="font-bold text-gray-600">Title</TableColumn>
-              <TableColumn className="font-bold text-gray-600">Difficulty</TableColumn>
-              <TableColumn className="font-bold text-gray-600">Submissions</TableColumn>
-              <TableColumn className="font-bold text-gray-600">Tags</TableColumn>
+              <TableColumn className="font-bold text-gray-600">
+                S.No
+              </TableColumn>
+              <TableColumn className="font-bold text-gray-600">
+                Title
+              </TableColumn>
+              <TableColumn className="font-bold text-gray-600">
+                Difficulty
+              </TableColumn>
+              <TableColumn className="font-bold text-gray-600">
+                Submissions
+              </TableColumn>
+              <TableColumn className="font-bold text-gray-600">
+                Tags
+              </TableColumn>
             </TableHeader>
             <TableBody>
-              {problems.length !== 0 &&
-                problems?.map((problem, idx) => {
+              {filteredProblems.length === 0 ? (
+                <TableRow>
+                  <TableCell className="relative">
+                    <p className="absolute left-80 text-lg h-[42.5vh]">No Problems Found</p>
+                  </TableCell>
+                  <TableCell>
+                  </TableCell>
+                  <TableCell>
+                  </TableCell>
+                  <TableCell>
+                  </TableCell>
+                  <TableCell>
+                 </TableCell>
+                </TableRow>
+              ) : (
+                filteredProblems?.map((problem, idx) => {
                   return (
                     <TableRow
                       className="hover:cursor-pointer hover:bg-gray-200"
@@ -175,12 +207,13 @@ const Problems = () => {
                       </TableCell>
                     </TableRow>
                   );
-                })}
+                })
+              )}
             </TableBody>
           </Table>
-          <div className="mt-2 pl-7">
-            <Pagination total={8} initialPage={1} />
-          </div>
+          {/* <div className="mt-2 pl-7">
+            <Pagination total={3} initialPage={1} />
+          </div> */}
         </div>
       </div>
     </div>

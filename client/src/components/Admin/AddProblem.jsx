@@ -67,6 +67,23 @@ const AddProblem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (
+      !details.slug ||
+      !details.title ||
+      !details.description ||
+      !details.difficulty ||
+      !details.constraints ||
+      !details.timeLimit ||
+      !details.tagItems ||
+      !details.input ||
+      !details.cppoutput ||
+      !details.javaoutput ||
+      !details.pythonoutput
+    ) {
+      toast.error("All fields are required.");
+      return;
+    }
+
     let tags = details.tagItems.split(",");
 
     const formData = new FormData();

@@ -121,6 +121,7 @@ const editProblem = async (req, res) => {
       title,
       difficulty,
       constraints,
+      timelimit,
       tags,
       testCases,
     } = req.body;
@@ -159,6 +160,7 @@ const editProblem = async (req, res) => {
     if (difficulty) updateData.difficulty = difficulty;
     if (constraints) updateData.constraints = constraints;
     if (tags) updateData.tags = tags;
+    if (timelimit) updateData.timelimit = timelimit;
 
     existingProblem = await Problem.findByIdAndUpdate(id, updateData, {
       new: true,
@@ -175,6 +177,24 @@ const editProblem = async (req, res) => {
   }
 };
 
+const deleteProblem = async (req, res) => {
+  // delete based on id
+  const id = req.params.id;
+
+  if (!id) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    await Problem.findByIdAndDelete(id);
+
+    return res.status(StatusCodes.OK).json({ message: "Problem deleted!" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
 
 
 
@@ -184,4 +204,5 @@ module.exports = {
   getProblemById,
   createProblem,
   editProblem,
+  deleteProblem,
 };

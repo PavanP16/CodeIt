@@ -64,7 +64,7 @@ const Submission = ({ sub }) => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col justify-between bg-gray-50 shadow-md rounded-xl py-6 px-4">
+    <div className="w-[95%] flex flex-col justify-between bg-gray-50 shadow-md rounded-xl py-6 px-4">
       <div className="flex justify-between w-full">
         <div className="flex gap-x-3 items-center">
           <h1 className="text-lg">{problem?.title}{" "}</h1>
@@ -101,9 +101,9 @@ const Submission = ({ sub }) => {
             </Modal>
           </div>
         </div>
-        <div className="p-2 ml-2 hover:bg-red-100 hover:text-red-600 hover:cursor-pointer w-fit text-gray-900 rounded-xl">
+        {/* <div className="p-2 ml-2 hover:bg-red-100 hover:text-red-600 hover:cursor-pointer w-fit text-gray-900 rounded-xl">
           <Trash size={20} className="text-inherit" />
-        </div>
+        </div> */}
       </div>
       <div className="mt-2 flex items-center gap-x-3">
         <h1 className="text-sm font-light">Submitted on : {formattedDate}</h1>

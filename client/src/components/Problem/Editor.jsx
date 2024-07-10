@@ -14,6 +14,7 @@ import { Pane } from "split-pane-react";
 import axios from "axios";
 import { RotateCcw } from "lucide-react";
 import toast from "react-hot-toast";
+import Tag from "../ui/Tag";
 
 const CODE_SNIPPETS = {
   cpp: `#include<bits/stdc++.h>\nusing namespace std;\n\nint main() {\n\n\tcout<<"Hello World!!"<<endl;\n\treturn 0;\n\n}`,
@@ -55,6 +56,7 @@ const EditorCode = ({ problem }) => {
   };
 
   const handleSubmitCode = async () => {
+    setRunning(true);
     setOutput("Submitting code...");
     const payload = {
       language,
@@ -72,16 +74,21 @@ const EditorCode = ({ problem }) => {
       console.log(data);
       setRunning(false);
       if (data.output) setOutput(data.output) || "";
+      if (data.output === "accepted") toast.success("Submission Accepted");
+      else toast.error(`Submission Rejected`);
     } catch (error) {
       console.log(error);
       setRunning(false);
-      setOutput(error.response.data.stderr);
+      toast.error(`Submission Rejected`);
+      setOutput(error.response.data);
     }
     setInput("");
   };
 
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
+    setInput("");
+    setOutput("");
     setCode(CODE_SNIPPETS[e.target.value]);
   };
 
@@ -158,6 +165,7 @@ const EditorCode = ({ problem }) => {
                   <Textarea
                     className="w-full mb-2 flex-1"
                     placeholder="Input"
+                    variant="faded"
                     value={`${running ? "Running..." : input}`}
                     onChange={(e) => setInput(e.target.value)}
                   />
@@ -166,17 +174,26 @@ const EditorCode = ({ problem }) => {
               {
                 <Tab key="output" title="Output">
                   <Textarea
-                    className="w-full mb-2 flex-1"
+                    className={`w-full mb-2 flex-1 ${
+                      output === "accepted"
+                        ? "text-green-500"
+                        : output === "rejected"
+                        ? "text-red-500"
+                        : output === "time limit exceeded"
+                        ? "text-amber-500"
+                        : ""
+                    }`}
                     placeholder="Output"
+                    variant="faded"
                     value={`${
                       output === "accepted" ||
                       output === "rejected" ||
                       output === "time limit exceeded"
-                        ? output.toUpperCase()
+                        ? output.charAt(0).toUpperCase() + output.slice(1)
                         : output
                     }`}
                     readOnly
-                  />
+                  ></Textarea>
                 </Tab>
               }
             </Tabs>

@@ -6,31 +6,31 @@ import RowProblem from "./RowProblem";
 const AdminProblems = () => {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const AllProblems = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_API}/api/v1/problems`,
+        {
+          withCredentials: true,
+        }
+      );
+      // console.log(response.data.problems);
+      setProblems(response.data.problems);
+    } catch (error) {
+      toast.error("Failed to fetch problems");
+      console.error("Failed to fetch problems:", error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const AllProblems = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_SERVER_API}/api/v1/problems`,
-          {
-            withCredentials: true,
-          }
-        );
-        // console.log(response.data.problems);
-        setProblems(response.data.problems);
-      } catch (error) {
-        toast.error("Failed to fetch problems");
-        console.error("Failed to fetch problems:", error);
-      }
-      setLoading(false);
-    };
     AllProblems();
   }, []);
 
   if (loading) return <div>Loading</div>;
 
   return (
-    <div className="p-5 h-fit bg-white mr-5 rounded-lg">
+    <div className="p-5 h-fit pb-20 bg-white mr-5 rounded-lg">
       <h1 className="text-3xl">Problems List</h1>
       <table className="w-[100%] mx-auto mt-8 bg-white">
         <thead className="bg-gray-100 h-12">
@@ -63,6 +63,7 @@ const AdminProblems = () => {
                 title={prob?.title}
                 CreatedOn={prob?.createdAt}
                 Submissions={prob?.Submissions}
+                AllProblems={AllProblems}
               />
             );
           })}

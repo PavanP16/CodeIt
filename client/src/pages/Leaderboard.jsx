@@ -37,6 +37,8 @@ const Leaderboard = () => {
 
     getLeaderboard();
   }, []);
+
+  const filteredUsers = data.filter(user => user.role !== 'admin');
   //   const data = [
   //     {
   //       name: "Pavan Kumar",
@@ -110,12 +112,11 @@ const Leaderboard = () => {
             <TableColumn className="text-bold text-sm text-gray-700">
               Overall Score
             </TableColumn>
-            {/* <TableColumn className="text-bold text-sm text-gray-700">
-              Questions solved
-            </TableColumn> */}
           </TableHeader>
           <TableBody>
-            {data.map((rs, idx) => {
+            {filteredUsers.map((rs, idx) => {
+
+              console.log(rs);
               return (
                 <TableRow key={idx} className="py-3">
                   <TableCell>
@@ -132,7 +133,6 @@ const Leaderboard = () => {
                     {rs.username}
                   </TableCell>
                   <TableCell className="pl-6">{rs.score}</TableCell>
-                  {/* <TableCell className="pl-20">{rs.solvedQuestions}</TableCell> */}
                 </TableRow>
               );
             })}
