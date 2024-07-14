@@ -75,7 +75,7 @@ const EditorCode = ({ problem }) => {
       setRunning(false);
       if (data.output) setOutput(data.output) || "";
       if (data.output === "accepted") toast.success("Submission Accepted");
-      else toast.error(`Submission Rejected`);
+      else toast.error(`Submission ${data.output}`);
     } catch (error) {
       console.log(error);
       setRunning(false);

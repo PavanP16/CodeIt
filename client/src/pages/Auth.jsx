@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@nextui-org/input";
 import { EyeSlashFilledIcon } from "../components/ui/icons/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../components/ui/icons/EyeFilledIcon";
-import { FaLaptopCode } from "react-icons/fa";
 import { useGlobalContext } from "../../ContextAPI/AuthContext";
 import toast from "react-hot-toast";
+import icon from '../../public/icon.svg'
 
 const Auth = () => {
   const { saveUser, userDetails } = useGlobalContext();
@@ -132,7 +132,7 @@ const Auth = () => {
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="p-10 w-96 min-h-[30rem] border flex flex-col items-center bg-white">
         <div className="-mt-5 flex flex-col items-center justify-center gap-y-2">
-          <FaLaptopCode size={70} />
+          <img src={icon} className="w-24 h-24"/>
           <h2 className="text-2xl tracking-wide font-[700] text-gray-800 text-center uppercase">
             CODE IT
           </h2>

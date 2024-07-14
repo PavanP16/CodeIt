@@ -34,6 +34,8 @@ const runCode = async (req, res) => {
 const submitCode = async (req, res) => {
   let { language, code, problemId } = req.body;
 
+  const userId = req.user.userId;
+
 
   if (code === undefined || !code) {
     return res.status(400).json({ error: "Empty code body!" });
@@ -84,7 +86,7 @@ const submitCode = async (req, res) => {
       language,
       status: output,
       problemId,
-      userId: req.user.userId,
+      userId,
     });
 
     await submission.save();
@@ -92,29 +94,42 @@ const submitCode = async (req, res) => {
     problem.Submissions += 1
     problem.save();
 
+
+    if (problem.solvedBy.includes(userId)) {
+      return res.json({ filepath, inputPath, output });
+    }
+
     if (output === "accepted") {
+      console.log("Output accepted, updating problem and user...");
 
-      if (problem.solvedBy.includes(req.user.userId)) return res.json({ filepath, inputPath, output });
+      await Problem.findByIdAndUpdate(problem._id, {
+        $push: { solvedBy: userId }
+      });
+      console.log("User added to solvedBy array:", problem.solvedBy);
 
-      else {
-        problem.solvedBy.push(req.user.userId);
-        await problem.save();
-        const user = await User.findById(req.user.userId);
-        console.log(user)
-        console.log(req.user);
-        if (problem.difficulty === "Hard") {
-          user.score += 80
-          user.save()
-        } else if (problem.difficulty === "Medium") {
-          user.score += 50
-          user.save();
-        } else {
-          user.score += 30
-          user.save();
-        }
-
-        return res.json({ filepath, inputPath, output });
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
+      console.log("User found:", user);
+
+      let scoreIncrement;
+      switch (problem.difficulty) {
+        case "Hard":
+          scoreIncrement = 80;
+          break;
+        case "Medium":
+          scoreIncrement = 50;
+          break;
+        default:
+          scoreIncrement = 30;
+      }
+
+      user.score += scoreIncrement;
+      await user.save();
+      console.log("User score updated:", user.score);
+
+      return res.json({ filepath, inputPath, output, score: user.score });
     }
 
     return res.json({ filepath, inputPath, output });
@@ -132,7 +147,7 @@ const submitCode = async (req, res) => {
 
     const problem = await Problem.findById(problemId);
     problem.Submissions += 1
-    problem.save();
+    await problem.save();
     return res.status(500).json(err);
   }
 };

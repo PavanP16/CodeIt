@@ -9,11 +9,7 @@ import { useGlobalContext } from "../../../ContextAPI/AuthContext";
 
 const Problem = ({ problem }) => {
   const { userDetails } = useGlobalContext();
-  const exists =
-    problem[0]?.solvedBy.findIndex((user) => user._id === userDetails._id) !==
-    -1;
-  console.log(exists);
-
+  const exists = problem[0].solvedBy.includes(userDetails.userId);
   return (
     <div className="py-3 pl-4 border min-h-screen border-gray-200">
       <h1 className="text-xl tracking-wide font-semibold">
