@@ -38,7 +38,7 @@ const Leaderboard = () => {
     getLeaderboard();
   }, []);
 
-  const filteredUsers = data.filter(user => user.role !== 'admin');
+  const filteredUsers = data.filter(user => user.role !== 'admin' && user.score !== 0);
   //   const data = [
   //     {
   //       name: "Pavan Kumar",
